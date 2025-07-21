@@ -1,0 +1,2234 @@
+/* MAIN_STYLE.CSS ************************************************/
+body {
+    font-family: sans-serif;
+    font-size: 15px;
+    background-color: #dedede; 
+    }
+
+body::-webkit-scrollbar-thumb {
+    background-color: navy;
+}
+
+/* make the edit screen background distinct color */
+/*
+#cke_1_contents
+html body.background-dropx.edit_view div#mainContainer div#mcontent form.rt_form table.rt_table_wysiwyg tbody tr td#cknotetext.rt_field div.django-ckeditor-widget div#cke_id_noteText.cke_1.cke.cke_reset.cke_chrome.cke_editor_id_noteText.cke_ltr.cke_browser_gecko
+*/
+/*body.edit_view*/
+
+/*div.cke_inner.cke_reset*/
+
+div#cke_1_contents.cke_contents.cke_reset
+{
+    background-color: #faedc8; 
+}
+
+
+textarea#id_noteText
+{
+    background-color: red; 
+}
+
+
+/* this targets Chrome, safari */
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+    body {font-size: 16px;}
+}
+
+/************ MOBILE ACCOMODATIONS ************/
+
+.mobile_blurb {
+    display: none;
+}
+
+/* mobile text entry field on record_edit.html */
+div#mobile_input_wrapper {
+    display: none;
+}
+
+
+/*************** FORM WIDGETS *****************/
+/* fix the submit buttons */
+input[type=submit] {
+    border: 2px solid transparent;
+    background-color: #c4c4c4;
+    color: #333333;
+}
+/* hover over should be pointer.  */
+input[type=submit]:hover  {
+    cursor: pointer;
+    background-color: #efefef;
+    border: 2px solid #cfdfff;
+}
+
+input[type=text],input[type=password], input[type=date], input[type=number], textarea {
+    /*eradicates the 3d effect */    
+    border-style: solid; 
+    border-width: 2px;
+    border-color: #e8e8e8;
+    color: #333333;
+    background-color: #fff;    
+}
+
+input[type=text]:hover,input[type=password]:hover, input[type=date]:hover, input[type=number]:hover, textarea:hover {
+    /*cursor: pointer;*/
+    /*background-color: #efefef;*/
+    border: 2px solid #cfdfff;
+}
+
+/*  For styling radio buttons and the like, 
+    see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio */
+input[type=radio] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+
+  border: 1px solid #aaa;
+ 
+  outline: none;
+  margin-right: 5px;
+
+  position: relative;
+  top: 4px;
+  background-color: #eeeeee;  
+}
+
+input[type=radio]:checked {
+    border: 1px solid #882222;
+    background-color: #882222;
+}
+input[type=checkbox] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  border-radius: 0%;
+  width: 16px;
+  height: 16px;
+
+  border: 1px solid #aaa;
+ 
+  outline: none;
+  margin-right: 5px;
+
+  position: relative;
+  top: 2px;
+  background-color: #eeeeee;
+}
+input[type=checkbox]:checked {
+    border: 1px solid #555555;
+    background-color: #555555;
+}
+
+input[type=submit].close_button {
+    /* for the COMPLETED confirmation window */    
+    margin-left: 350px;
+    padding: 20px;
+    border-width: 2px;
+    border-color: pink;
+}
+
+div#home_page_login input[type=text], div#home_page_login input[type=password] {
+    /*eradicates the 3d effect */
+    border-style: solid;
+    border-width: 0px;
+    background-color: #cccccc;
+    font-size: 110%;
+    padding-left: 10px;
+}
+
+div.home_page_reminder_section form hr {
+    color: #eaeaea;
+
+}
+
+div#sidebar table#jumpbar {
+    border-style: dotted;
+    border-width: 2px;
+    border-color: #ffffff;
+    /*background-color: #c4c4c4;*/
+    padding-right: 15px;
+    margin-top: 10px;
+}
+
+
+div#sidebar table#jumpbar td#dw_widgets {
+    width: 125px;
+    padding-right:10px; /* was 20px */
+    font-size: 85%;
+    /*border: solid 2px red;*/
+}
+
+span.user_data {
+    font-size:70%;
+    color: #444444;
+    float: right;
+    padding-top: 2px;
+}
+
+.relix_minor_note {
+    font-size: 85%;
+    color: #777777;
+}
+
+/*****************************************/
+p.rt_goto {
+    font-size: 60%;
+
+}
+
+p.rt_goto span.fold_rt_header_widget {
+    background-color: #ffcc99;
+}
+
+/** this one is for shownote.html **/
+div span.shownote_header_widget {
+    font-size: 110%;
+}
+div span.shownote_header_widget:hover {
+    cursor: pointer;
+    font-weight: bold;
+    background-color: #8181e8;
+}
+
+
+p.rt_goto span.fold_rt_header_widget:hover {
+    cursor: pointer;
+}
+
+
+div.rt_hier_rel_container {
+    width: 808px;
+}
+
+div.rt_hier_rel_container div.rt_anc_crumb a:link, div.rt_hier_rel_container div.rt_anc_crumb a:visited,
+div.rt_hier_rel_container div.rt_related a:link, div.rt_hier_rel_container div.rt_related a:visited,
+div#mcontent div.anc_crumb span.parentCrumb a:link,
+div#mcontent div.anc_crumb span.parentCrumb a:visited 
+{
+    color: #600;
+    font-size: 77%;
+    text-decoration:none;
+}
+
+div.rt_hier_rel_container div.rt_related {
+    float: right;
+    width:50%;
+}
+div.rt_hier_rel_container div.rt_anc_crumb {
+    float: left;
+    width:50%;
+}
+
+.nofloat { clear:both; }
+
+/************************************/
+
+div#mcontent div.shownote_anc_crumb {
+    margin-bottom: 20px;
+}
+
+/* Hierarchical ****************************************/
+td span.parentCrumb
+{
+    color: white;
+    font-size: 88%;
+}
+span.parentCrumb span.parent_crumb_item {
+    display: block; 
+}
+
+/* Flat ***********************************************/
+table.flat_list div.parentCrumb
+{
+    font-size:80%;
+    padding-bottom: 10px;
+
+}
+table.flat_list div.title_block ul
+{
+    padding-left: 25px;
+}
+
+
+/* For tagged pages view, highlight qnotes work_set */
+table.flat_list tr.workset_qnote td.workset_qnote,
+table.item_table tr.workset_qnote td.workset_qnote
+{
+    background: #ffcccc;
+}
+
+
+
+/* jumplinks basics */
+span#shortcutlist span.shortcut {
+    display: inline-block;
+    width: 55px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 1px;
+    font-size: 70%;
+    /*font-size: 11px; */
+}
+
+/* make jumplinks backgrounds different colors */
+
+/* toggle color between just 2 reduces noise */
+span.wsc_0,span.wsc_5
+{ background-color: #cfebff; }
+span.wsc_1,span.wsc_6
+{ background-color: #99ceff; }
+span.wsc_2,span.wsc_7
+{ background-color: #a4ddcc; }
+span.wsc_3,span.wsc_8
+{ background-color: #f8f8f8; }
+
+/*relix is special */
+span.wsc_4
+{ background-color: #ecc; }
+
+/*
+span.wsc_1c { background-color: #eeeeee; }
+span.wsc_2 { background-color: #cfebff; }
+span.wsc_3 { background-color: #a3ceff; }
+span.wsc_3c { background-color: #eeeeee; }
+span.wsc_4 { background-color: #cfebff; }
+span.wsc_5 { background-color: #eeeeee; }
+span.wsc_2a { background-color: #cfdfff; }
+span.wsc_3a { background-color:  #eeeeee; }
+span.wsc_4a { background-color: #CC9966; }
+span.wsc_5a { background-color: #ffeeff; }
+span.wsc_6 { background-color: #bbDDFF; }
+span.wsc_7 { background-color: #ffffdd; }
+span.wsc_8 { background-color: #dfdbff; }
+*/
+
+span.wsc_9 { background-color: #CC9966; }
+span.wsc_10 { background-color: #ddffaa; }
+span.wsc_11 { background-color: #9999FF; }
+span.wsc_12 { background-color: #cacb77; }
+span.wsc_13 { background-color: #88bbcc; }
+span.wsc_14 { background-color: #FFCC99; }
+span.wsc_15 { background-color: #a4ddcc; }
+span.wsc_16 { background-color: #D0D0D0 ; }
+span.wsc_17 { background-color: #8888bb; }
+span.wsc_18 { background-color: #99CCff; }
+span.wsc_19 { background-color: #dadada; } /* light grey */
+span.wsc_20 { background-color: #a3ceff; }
+span.wsc_21 { background-color: #b29050; }
+span.wsc_22 { background-color: #6085b2; }
+span.wsc_23 { background-color: #bfdbff; }
+span.wsc_24 { background-color: #ffe9a4; }
+span.wsc_25 { background-color: #CC9966; }
+span.wsc_26 { background-color: #99CCff; }
+
+/* TITLE BLOCK W/DIV'S  *********************/
+
+div.title_block div.bull_indent ul, div.title_block ul  {
+    margin: 0px;
+    padding-left: 15px;
+    font-size: 90%;
+}
+
+span.wopf {
+    font-weight: bold;
+    color: #550000;
+    padding-left: 10px;
+}
+
+/* these colors are for the bullet/list symbol
+   the item colors are handled below, w/a:...
+   Note that depth0... is used in the selector, not
+   path_length_x . 
+   See also status_10 and status_10 selectors.
+
+*/
+
+div.bull_indent ul li.depth0 {
+    list-style-type: none; 
+    font-weight: bold;
+    font-style: italic;
+}
+div.bull_indent ul li.depth1 {
+    list-style-type: disc;
+    font-weight: bold;
+    /*color: #000088;*/
+    
+}
+div.bull_indent ul li.depth2 {
+    list-style-type: square;
+}
+div.bull_indent ul li.depth3 {
+    list-style-type: circle;
+     color: #550000;
+}
+
+div.bull_indent ul li.depth4 {
+    list-style-type: disc;
+}
+div.bull_indent ul li.depth5 {
+    list-style-type: square;
+    color: #400080;
+}
+div.bull_indent ul li.depth6 {
+    list-style-type: circle;
+}
+
+div.bull_indent ul li.depth7 {
+    list-style-type: disc;
+    color: yellow;
+
+}
+div.bull_indent ul li.depth8 {
+    list-style-type: square;
+}
+div.bull_indent ul li.depth9 {
+    list-style-type: circle;
+}
+
+/* override disc for items that have a note */
+tr.has_note div.bull_indent ul li.depth1,
+tr.has_note div.bull_indent ul li.depth2,
+tr.has_note div.bull_indent ul li.depth3,
+tr.has_note div.bull_indent ul li.depth4,
+tr.has_note div.bull_indent ul li.depth5,
+tr.has_note div.bull_indent ul li.depth6,
+tr.has_note div.bull_indent ul li.depth7,
+tr.has_note div.bull_indent ul li.depth8,
+tr.has_note div.bull_indent ul li.depth9 {
+    
+/*  disclosure-closed is perfect, but not suported on chrome */
+/*  also, it's misleading b/c it looks like a twistie        
+    list-style-type: disclosure-closed; */    
+}
+
+
+
+table.e_list td.itemtd div.item_content_block {
+    /*background: #ffddaa */
+}
+
+table.e_list td.itemtd div.score_and_cross {
+    /* for search score, and move pending cross */
+    font-size: 70%;
+    float: right;
+    color: #888;
+}
+table.e_list.item_table tr.items td.itemtd.id_cell_psd {
+    /* for search score, and move pending cross */
+    color: pink;
+    width: 58px;
+}
+
+table tr td.button_row_cell {
+    float: right;
+
+}
+
+span.trunk_workset_label {
+    color: grey;
+    font-size: 80%;
+    font-weight: normal;
+    font-style: normal; 
+
+}
+
+
+/******ITEM DETAILS BLOCK ******************************/
+
+span.shownote_widget, table.flat_list span.ancestor_fetch {
+    cursor: pointer;
+    color: #aac;  /* aac 66a */
+    font-size: 120%;
+    padding-left: 10px;
+}
+
+span.shownote_widget:hover, table.flat_list span.ancestor_fetch:hover {
+    color:#800;
+
+}
+
+table.e_list td.itemtd div.item_details_block {
+    display: none;
+    /*background: #dddfff;*/
+    margin-top: 12px;
+    margin-left: 20px;
+    /*font-size: 80%;*/
+}
+table.e_list div.item_details_block  ul.item_detail_widgets li.live_link {
+    /** widget linkouts **/
+    font-size:100%;
+ }
+table.e_list div.item_details_block  ul.item_detail_widgets li.static_text {
+    font-size: 80%;
+    color: #777;
+    background: none;
+}
+
+
+table.e_list td.itemtd div.item_details_block a:link,
+table.e_list td.itemtd div.item_details_block a:visited,
+table.e_list td.itemtd div.item_details_block a:hover
+{
+    color: #888;
+    font-size: 80%;
+}
+
+table.e_list div.item_details_block ul.item_detail_widgets {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: inline;
+    /*align: center;*/
+}
+table.e_list div.item_details_block  ul.item_detail_widgets li {
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 3px;
+    background: #eee;
+}
+
+table.e_list div.item_details_block  ul.item_detail_widgets li a:hover,
+table.e_list div.item_details_block  ul.item_detail_widgets li.live_link:hover
+{
+    cursor: pointer;
+    text-decoration:underline;    
+    color: #00a;    
+}
+
+span.search_ancestor_toggle {
+    color: #888;
+    background: #fff;
+    font-size: 80%;
+    margin-left: 50px;
+}
+span.search_ancestor_toggle:hover {
+    color: #00a;
+    cursor: pointer;
+}
+
+
+/**************select item widgets *****************/
+
+/**** this is for the entire ID cell, cell #1 ****/
+table.e_list td.id_cell_psd {
+    width: 54px;
+    font-size: 80%;
+}
+
+table.e_list span.item_select_widgets {
+    display: none;
+}
+table.e_list span.item_select_widgets input#itemSelect {
+    float: left;
+    margin-top: 3px;
+}
+table.e_list span.item_select_widgets input#grab {
+    float: right;
+}
+ 
+/*********************************************************************************************************/
+
+/* adorn rows with adorn_N != 0  */
+/*div#mainContainer div#mainContainer div#mcontent form table.psd_table.item_table tr.adorn_1, span.example.adorn_1 { background: pink;  }*/
+div#mainContainer div#mcontent form table.psd_table.item_table tr.adorn_1, span.example.adorn_1 { background: pink;  }
+div#mainContainer div#mcontent form table.psd_table.item_table tr.adorn_2, span.example.adorn_2 { background: #ffff99;  }
+div#mainContainer div#mcontent form table.psd_table.item_table tr.adorn_3, span.example.adorn_3 { background: #ffccaa;  }
+div#mainContainer div#mcontent form table.psd_table.item_table tr.adorn_4, span.example.adorn_4 { background: #88aaaa;  }
+div#mainContainer div#mcontent form table.psd_table.item_table tr.adorn_5, span.example.adorn_5 { background: #aaaa88;  }
+
+
+/* a href's won't take color, you have to specify the link states */
+
+div.bull_indent ul li.depth0 a:visited,
+div.bull_indent ul li.depth0 a:link
+ { font-weight: bold; font-style: italic; }
+div.bull_indent ul li.depth1 a:visited,
+div.bull_indent ul li.depth1 a:link
+ { font-weight: bold; color: #000088;}
+div.bull_indent ul li.depth2 a:visited,
+div.bull_indent ul li.depth2 a:link
+ { color: #333333; }
+div.bull_indent ul li.depth3 a:visited,
+div.bull_indent ul li.depth3 a:link
+ { color: #550000; }
+		
+div.bull_indent ul li.depth5 a:visited,
+div.bull_indent ul li.depth5 a:link
+ { color: #400080; }
+
+div.bull_indent ul li.depth7 a:visited,
+div.bull_indent ul li.depth7 a:link
+ { color: #008000; }
+
+div.bull_indent ul li.depth9 a:visited,
+div.bull_indent ul li.depth9 a:link
+ { color: #86592d; }
+
+table.psd_table td a.parentLink:link,
+table.psd_table  a.parentLink:visited {
+    color: white;
+}
+
+/* related content title line */
+#mcontent table.psd_table   div.related,
+#mcontent table.psd_table   div.related a:visited,
+#mcontent table.psd_table   div.related a:link {
+    color: #2121a0;
+    font-size: 85%;
+    padding-top: 5px;
+}
+
+#mcontent table.psd_table div.related.done,
+#mcontent table.psd_table div.related.done a:visited,
+#mcontent table.psd_table div.related.done a:link {
+    font-style: italic;
+    color: white;
+    
+}
+
+/* now in a wrapper div */
+table.flat_list div.related_items_list
+{
+    padding-top: 5px;
+}
+
+/*********** HELP PAGE VIEW **********************/
+/* stat table on the help page */
+table.stat_table {
+    border-style: solid;
+    border-width: 8px;	
+    border-color: #dddddd;
+    background-color: #cccccc;    
+}
+table.stat_table tr {
+    background: #eeeeee;
+}
+table.stat_table td.number_cell {
+    text-align: right;
+    width: 80px; 
+}
+table.stat_table td {
+    padding: 8px;
+}
+table.stat_table td.label_cell {
+    text-align: right;
+}
+
+/***********************************************************/
+
+div#mcontent table.session_vars {
+    background-color: #cccccc;
+}
+div#mcontent table.session_vars tr td.relix_minor_note {
+    margin: 4px;
+    background-color: #eeeeee;
+    padding-top: 3px;
+}
+
+span.printonly {
+    display: none; 
+
+}
+
+
+/************** main table business *************************/
+div#mcontent table.e_list {
+    clear: both;  /** nuke the float **/
+}
+
+/**** priority tag styling on item_list ******/
+td.itemtd.priority_0 { color: gray; } 
+td.itemtd.priority_1 { color: white;  background: #338833; } /* today */
+td.itemtd.priority_2 { color: orange; } /* urgent */
+td.itemtd.priority_3 { color: red; } /* important */
+td.itemtd.priority_4 { color: blue; } /* normal */
+td.itemtd.priority_5 { color: purple; } /* low */
+td.itemtd.priority_6 { color: black; } 
+td.itemtd.priority_8 { color: green; }
+
+
+/********************** !   !      !       !    !   !   ****************************/
+/****** itemlist table font color and size happens here ***yes************/
+table.psd_table tr { 
+    color: #444444;
+    font-size: 92%;
+}
+table.psd_table td a:link, table.psd_table a:visited  {
+    text-decoration:none;
+    color: #444444;
+}
+
+#mainContainer #mcontent table.psd_table tr.items.sectionhead td {
+    /*background-color: #aeaea5;*/
+    /*background-color: #eaeaea;*/
+    border: 2px dotted #eaeaea;
+}
+
+
+/*******ElasticSearch score********************************/
+
+span.esscore {
+    font-size: 85%;
+    color: #884422;
+    padding-left:10px
+}
+
+
+div#mainContainer div#mcontent table.psd_table tr.items {
+    background-color: #c4c4c4;
+}
+
+div#mainContainer div#mcontent table.psd_table tr.items.status_10 li.item_title { 
+    /* status= pending done */
+    color: #EDF0B4;
+}
+div#mainContainer div#mcontent table.psd_table tr.items.status_11 li.item_title { 
+    /* status= pending cancel */
+    color: #F0B4ED;
+}
+
+
+/* this makes the item_list row dimmed (white) if the item is archived */
+table.psd_table tr.archived_True a:link,
+table.psd_table tr.archived_True a:visited,
+table.psd_table tr.archived_True div.title_block a:link,
+table.psd_table tr.archived_True div.title_block a:visited
+{
+    text-decoration:none;
+    color: #f6f6f6;
+}
+
+/* hover over title should be pointer. It's JS now, not html href */
+/* I don't think this works on the item lsit any more. It's an "anchor" tag, not a span */
+span.etn:hover  {
+    cursor: pointer;
+    text-decoration:underline;    
+}
+
+div#mcontent table.psd_table.item_table > div.title_block div.bull_indent ul li.item_title span.item_title a:hover {
+    text-decoration:underline;        
+}
+
+.status, .priority {
+    font-size: 90%;
+}
+
+td.itemtd.dates {
+    font-size: 75%;
+    color: #848484;
+    width: 60px;
+}
+
+td.itemtd.meeting_add {
+    font-size: 75%;
+    color: #848484;
+    width: 60px;
+}
+
+
+td.itemtd.work_set {
+    color: #848484;
+    font-size: 75%;
+}
+
+
+/* the workset divider row on meetings.html */
+table.meetings td.meeting_workset_grouper  {
+    font-size: 110%;
+    color: #000088;
+    background-color: #b4b4b4;
+    padding: 5px 5px 5px 14px ;
+    
+}
+
+td.itemtd.dates span.accessed_date {
+    color: #000088;
+}
+
+td.itemtd.dates span.reminder_date {
+    color: #660000;
+}
+td.itemtd.dates span.reminder_date.late {
+    background-color: #fffd9d;
+}
+
+/************ People/Person tables ************************/
+
+td.itemtd.people {
+    font-size: 75%;
+    /*width: 60px;*/
+}
+
+td.itemtd.people:hover  {
+    cursor: pointer;
+}
+
+/* manage people page table */
+table#manage_people.psd_table.manage_people tr td {
+    color: #440000;
+    padding-right: 16px;
+    padding-bottom: 12px;
+}
+table#manage_people.psd_table.manage_people  {
+    margin-left: 30px;
+}
+
+div.mp_new_person {
+    margin-left: 30px;
+    margin-top:  20px;
+}
+
+div#manage_people_submit {
+    margin-top: 10px;
+    margin-left: 400px;
+}
+
+/* ************************************************* */
+td.itemtd.people span.assigned_to,
+table.people div.assigned_to
+{
+    color: #440000;
+}
+
+table.people div.assigned_to, table.people div.involves {
+    font-size: 80%;
+}
+
+table.people span.popout:hover, table.people span.item_title:hover    {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+table.people div.workset {
+    font-size: 75%;
+    padding-top: 5px;
+}
+
+table.people div.parentCrumb {
+    display: none;
+}
+
+/******** Manage_People table **************/
+table#manage_people.psd_table.item_table {
+    padding-left: 40px;
+}
+table#manage_people.psd_table.item_table tr td {
+    padding: 10px 25px 10px 25px;
+}
+table#manage_people.psd_table.item_table tr td a:link,
+table#manage_people.psd_table.item_table tr td a:visited {
+    color: #000088;
+}
+table#manage_people.psd_table.item_table tr td a:hover {
+    text-decoration: underline;
+}
+
+/********* item list Priority/Status Select box styling *****/
+/* based on: https://codepen.io/ericrasch/pen/zjDBx?editors=0100#0 */
+
+tr.people td.ppriority, tr.people td.status {
+    font-size: 80%;
+    border: 0;
+    color: #8888bb;
+    font-weight: bold;
+
+}
+
+select.ps_select {
+
+   border: 0;
+   color: #888888;
+   background: transparent;
+   font-size: 90%;
+   font-weight: bold;
+   /**background: #58B14C;*/
+   -webkit-appearance: none;
+   -moz-appearance: none;   
+   cursor: pointer;
+   padding-left: 5px;
+   border-left: 4px solid #cccccc;
+}
+
+
+select.ps_select.priority_1, tr.people td.priority_p1 span.priority_p1 {
+    padding-left: 5px;
+    border-left: 4px solid green;
+}
+select.ps_select.priority_2, tr.people td.priority_p2 span.priority_p2 {
+    padding-left: 5px;
+    border-left: 4px solid orange;
+}
+select.ps_select.priority_3, tr.people td.priority_p3 span.priority_p3 {
+    padding-left: 5px;
+    border-left: 4px solid red;
+}
+select.ps_select.priority_4, tr.people td.priority_p4  span.priority_p4 {
+    padding-left: 5px;
+    border-left: 4px solid blue;
+}
+
+/**** itemschange widgets at bottom of item list ***/
+select#priority_change, select#status_change
+{
+    border-width: 2px;
+    border-color: #cccccc;
+    border-style: solid;
+    background-color: white;
+    color: #333333;
+    -moz-appearance: none; 
+}
+
+
+input#pmid_manual {
+    border: 2px solid #cccccc;
+    background-color: #ffffff;
+    /*-moz-appearance: none;   */
+}
+
+input#pmid_manual:hover  {
+    cursor: pointer;
+    background-color: #ffffff;
+    border: 2px solid #cfdfff;
+}
+
+tr.submit_button input#pmid_manual a:hover {
+    background-color: pink;
+}
+
+
+/************** lockfile.html ***********************/
+ 
+div#mcontent table.psd_table.item_table tr.items.lockrow td {
+    padding: 10px;
+}
+div#mcontent table.psd_table.item_table tr.items.lockrow td a:hover {
+    color: blue;
+}
+
+
+/**************DETAIL TABLE  (detail view) detail.html ***********************/
+
+table.psd_table.detail_table {
+    width: 70%;
+}
+
+div.detail_metadata {
+    display: none;
+}
+
+table.psd_table.detail_table a:link,
+table.psd_table.detail_table a:visited{
+    text-decoration:underline;
+}
+
+table.psd_table.detail_table a:hover{
+    color: blue;
+}
+
+
+table.psd_table.detail_table tr.items td {
+    padding: 10px;
+}
+
+table.psd_table.detail_table tr.items td#detail_relx td {
+    padding: 3px;
+}
+
+table.psd_table.detail_table tr.items td.flag {
+    color: green;
+
+}
+
+td.detail_label {
+    text-align: right;
+    width: 120px;
+}
+
+
+tr.items td.detail_radio ul  {
+    list-style: none;
+    margin-top: 0;
+    margin-bottom: 0;
+    -webkit-padding-start: 0;
+    -moz-padding-start: 0;    
+}
+
+td.detail_note_cell {
+    padding-left: 30px;
+    padding-top: 20px;
+
+}
+
+#sidebar table.detail_table td.detail_note_cell ul 
+{ 
+    display: block;
+    /*list-style-type: square;*/
+    color: #444444;
+    list-style-type: disc;
+}
+#sidebar table.detail_table td.detail_note_cell ul li {
+    display: list-item;   /*** this is vital! it's not a "block"***/
+    background-color: #ffffff;
+    margin-bottom: 3px;
+    font-size: 100%;
+}
+
+table.psd_table.detail_table.upper tr.items td table.relationship_table tr td {
+    padding: 3px;
+}
+
+table.psd_table.detail_table.psd_detail_lower  {
+    float:left;
+    width: 35%;
+    border-width: 5px;
+}
+
+
+/**note stuff noteText*****************************************************/
+
+div.shownote {
+    border-style: dotted;
+    border-width: 1px;	
+    border-color: #cccccc;
+    width: 95%;
+}
+
+
+pre.wrap_note {
+    /* used for in-line display of text-formatted note_text   x1x
+    /*http://stackoverflow.com/questions/1147877/how-to-word-wrap-text-in-html */
+    /*word-wrap: break-word;or break-all; but not for pre tag*/
+    margin-left: 10px;
+    width: 80%;
+    /* http://www.w3schools.com/cssref/pr_text_white-space.asp */
+    white-space: pre-line; /*works like magic in a pre tag! */
+}
+
+
+div.shownote pre.wrap_note.note_plain {
+    width: 92%;
+    color: #342424; 
+    font-family: monospace; 
+}
+
+div.shownote div.wrap_note.note_formatted ol li,
+div.shownote div.wrap_note.note_formatted ul li {
+    font-size: 90%;
+    color: #302020;
+    margin-bottom: 8px;
+}
+
+div.shownote_title h3 {
+    margin-left: 5px;
+    margin-bottom: 0px;
+}
+
+
+table.shownote_dateline {
+    border: 2px dotted white;
+    padding: 10px;
+    width: 92%;
+    font-size: 80%;
+    color: #555555;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    clear: both;  /* clears float */
+}
+
+/* show_note, not shownote for the ID */
+div#show_note div.anc.anc_crumb {
+    float: left;
+    width: 50%;
+}
+div#show_note div.anc.anc_crumb h5,
+div#show_note div.rel.anc_crumb h5
+{
+    margin-bottom: 0px;
+    margin-left: 16px;
+    color: #555555;
+}
+div#show_note div.rel.anc_crumb {
+    width: 50%;
+    float: right;
+}
+
+div#show_note div.rel.anc_crumb span.parentCrumb ul li.rel_done a:link,
+div#show_note div.rel.anc_crumb span.parentCrumb ul li.rel_done a:visited
+{
+    color: white;
+}
+
+
+
+
+div.showpix {
+    font-size: 80%;
+    color: #555555;
+    margin-top: 20px;
+    margin-left: 5px;
+}
+
+div.showpix_files {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    margin-right: 5px;    
+}
+
+div.showpix_images {
+    margin-left: 5px;
+}
+div.showpix_images img {
+    max-width: 90%;
+}
+
+div.showpix_each {
+    border-style: dotted;
+    border-width: 1px;	
+    border-color: #cccccc;
+    width: 95%;
+    margin-bottom: 20px;
+}
+
+
+/* reader view */
+table.psd_table.item_table tr.items td.noreader, th.noreader {
+    display: none;
+}
+
+
+/* for detail view */
+#mainContainer div#mcontent table.psd_table tr td.detail_note_cell div.wrap_note.note_formatted a:link,
+#mainContainer div#mcontent table.psd_table tr td.detail_note_cell div.wrap_note.note_formatted a:visited
+{
+    text-decoration:underline;
+    color: blue;
+}
+
+
+/**NOTES EDITING FORM***********************************************************/
+
+
+form.rt_form {
+    background-color:#f4f4f4;
+
+}
+
+table#input_form input#title {
+    width: 700px;
+}
+
+input.notes_button {
+    margin-top:10px;
+    font-size: 90%;
+}
+
+div.info_line input#action_button_top.notes_button {
+    margin-left: 400px;
+}
+
+/** KID TREE  KID_TREE  KIDTREE **************************/
+
+table#kidtree {
+    background-color: #fff;
+
+}
+table#kidtree tr td {
+    background-color: #fff;
+
+}
+table#kidtree dl.kidnote  {
+    background-color: #fff;
+    width: 97%;
+    float: left;
+}
+dl.kidnote dd {
+    font-size: 80%;
+    background-color: #fff;
+}
+div.kidtree_date {
+    font-size: 75%;
+    color: #444;
+    float: right;
+}
+
+/** NEW RT FORM ******************************************/
+
+table.rt_table {
+    background: white;
+}
+
+table.rt_table tr {
+    background: #dedede;
+}
+
+table.rt_table tr#pmid {
+    display: none;
+}
+
+table.rt_table td {
+    /*border-collapse: collapse;*/
+    padding-top: 5px;
+}
+
+table.rt_table td.rt_label {
+    text-align: right;
+    font-size: 85%;
+    padding-right: 4px;
+    padding-left: 10px;
+}
+
+table.rt_table td.rt_label { color:  #444444;  }
+table.rt_table td.rt_label.group { color:  #770000;  }
+table.rt_table td.rt_label.grid  { color:  #774300;  }
+table.rt_table td.rt_label.jump  { color: #000077;   }
+table.rt_table td.rt_label.mark  { color: #005500;   }
+
+
+table.rt_table td.rt_field {
+    padding-left: 4px;
+    padding-bottom: 6px;
+    font-size: 90%;
+ }
+ 
+table.rt_table input#id_title {
+    width: 600px;
+}
+
+table.rt_table tr#title td.rt_field {
+    font-weight: bold;
+
+}
+
+table.rt_table_wysiwyg {
+    margin-top: 20px;
+}
+
+table.rt_table_wysiwyg input#id_image_list {
+    width: 600px;
+}
+
+
+table tr.rt_submit.upper td.update_button_cell,  table tr.rt_submit.lower td.update_button_cell {
+    /* to match the width of the ckeditor table; cancel / update */
+    /* was 418px */
+    width: 695px;
+    padding-bottom:20px;
+}
+table tr.rt_submit.upper td.cancel_link,  table tr.rt_submit.lower td.cancel_link {
+    /* to match the width of the ckeditor table; cancel / update */
+    padding-bottom:20px;
+}
+
+table.item_table.submit_upper, table.item_table.submit_lower {
+    padding-top: 20px;
+    font-size: 80%;
+}
+
+/* post-mobile */
+tr.rt_submit.upper td input, tr.rt_submit.lower td input {
+    background: #006600;
+    color: white;
+    border: none;
+    padding: 4px;
+}
+
+tr.rt_submit.upper td input:hover, tr.rt_submit.lower td input:hover {
+  background-color: #008800; 
+  color: white;
+  cursor: pointer;
+}
+
+
+
+/* actions */
+div.submit_lower {
+    padding-top: 25px;
+    padding-bottom: 25px;
+    padding-left: 20px;
+    font-size: 80%;
+    color: #666666;
+}
+div.submit_lower span {
+    padding-right: 10px;
+    page-break-inside: avoid;
+    display: inline-block;
+}
+
+
+
+/**RELIX EDITING FORM *******************************************************/
+/************** change_relix.html ********************/
+
+
+table#rel_form tr.chgrel_item_sel_banner {
+    background: #ffc8c8;
+    font-weight: bold;
+}
+
+div#mcontent div.delrel a:link,
+div#mcontent div.delrel a:visited {
+    /*float: right;*/
+    color: #880000;
+    padding-left: 10px;
+}
+
+table#rel_form {
+    padding-bottom: 20px;
+
+}
+
+table#rel_form tr.items.relpick {
+    display: none;
+}
+
+table#adoptionTable {
+    background-color: #c7c7c7;
+    margin-bottom: 5px;
+    padding: 8px;
+}
+table#adoptionTable td {
+
+    border-style: solid;
+    border-width: 1px;	
+    border-color: #fdfdfd;
+}
+
+
+/**** advanced search form       ****************************/
+/**** AND  item edit form fields ****/
+
+div#mcontent form table.adv_search_form {
+    width: 726px;
+
+}
+
+td.rt_field select#id_priority,
+td.rt_field select#id_status,
+td.rt_field select#id_grid_order, 
+table.adv_search_form select
+{    /*border: 4px solid transparent;*/
+    /*background: #bbbbbb;*/
+    background-color: #ffefef;
+    border: 2px solid transparent;
+    color: #333333;
+    -moz-appearance: none;
+}
+table.adv_search_form select, table.adv_search_form input[type=number] {
+    /*border-left: 8px solid #883333;*/
+    /*border: 2px solid #cfdfff;*/
+    border: 2px solid #fff;
+    color: #333333;
+    background:  #ffefef;
+    -moz-appearance: none;
+}
+
+/*********** people_list ***************************/
+
+div.people_list span.involves {
+    font-style: italic;
+    color: #88cc88;
+}
+div.people_list span.assigned_to {
+    font-style: italic;    
+    color: #8888aa;
+}
+
+
+div.person_banner {
+    margin-top: 40px;
+    width: 90%;
+    font-size: 120%;
+    background-color: #cfdfff;
+
+}
+div.person_subbanner {
+    margin-top: 10px;
+    width: 70%;
+    font-size: 100%;
+    background-color: #eee;
+
+}
+
+/************ HORIZONTAL - people pane on the item list ***********/
+
+ul.item_people_assigned, ul.item_people_involved {
+    /*float: right;*/
+    list-style-type: none; 
+    font-size: 85%;
+    /*background-color: pink;*/
+    padding-left: 1px;
+    padding-bottom: 2px;
+}
+ul.item_people_assigned li {
+    display: inline;
+    margin-right: 10px;
+    /*background-color: white;*/
+    color: #440000;
+}
+ul.item_people_involved li {
+    display: inline;
+    margin-right: 10px;
+    /*background-color: white;*/
+}
+/************  VERTICAL version of people pane on the item list ***********/
+
+ul.item_people {
+    list-style-type: none; 
+    font-size: 75%;
+    padding-left: 1px;
+    padding-bottom: 2px;
+    float: right;
+}
+ul.item_people li {
+    margin-right: 10px;
+    /*background-color: white;*/
+    color: #440000;
+}
+
+
+/************************************************************************/
+/** savewarn is defined in STYLE tags at the top of the templates **/
+
+/** contains statusline - search reiteration, reload w/ w/o arc etc **/
+div.info_line {
+    width: 98%;
+
+}
+
+div.info_line ul li a {
+    text-decoration:none;
+    color: #444444; 
+}
+
+div.info_line ul li a:hover {
+    text-decoration:underline;
+    color:#444444;
+    cursor: pointer;
+}
+
+div.info_line ul.statusLine  {
+    float:left;
+    
+}
+
+div#mcontent ul.statusLine {
+    /* in itemlist */
+    padding-top: 2px;
+    padding-right: 6px;
+    padding-bottom: 6px;
+    padding-left: 6px;    
+    margin-left: 2px;
+    display: block;
+    /* width: 500px; deactivated 2020-12-25 */
+    font-size: 60%;
+}
+
+div#mcontent ul.statusLine li {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    color: #444444; 
+    background:  #bebebe;
+    width: 100px;
+    display: inline;
+}
+
+/* overrides for the search status line */
+div#mcontent ul#search_status_line   {
+    width: 88%;
+
+}
+div#mcontent ul#search_status_line li  {
+    padding-left: 4px;
+    padding-right: 20px;
+    background-color: #ffffff;
+    display: inline;
+    font-size: 120%;
+}
+
+div#mcontent ul.statusLine li.term_line {
+    /*search term text on search results page */
+    padding: 0px;
+    display: block;
+    width: 100%;
+    /*line-height: 66%;*/
+}
+
+/****** SHORTLIST *******************************************/
+
+ul.new_shortlist_item {
+    display: block;
+    clear: both;
+    font-size: 60%;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-right: 6px;
+    padding-left: 4px;    
+    margin-left: 4px;
+    margin-right: 4px;
+    border-top: 12px;
+}
+
+ul.new_shortlist_item input.new_shortlist_button {
+    margin-left: 10px;
+    background: #dfdfdf;
+}
+
+ul.new_shortlist_item select.ps_select {
+    background: white;
+}
+
+ul.new_shortlist_item li {
+    display: inline-block; 
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    /* this next ones puts the space between/below li's */
+    margin-right: 2px;
+    margin-bottom: 2px;
+    color: #444444; 
+    background: #bebebe;
+}
+
+ul.new_shortlist_item li input {
+    font-size: 99%;
+}
+
+select.new_shortlist_item {
+    font-size: 99%;
+}
+
+div.info_line ul.new_shortlist_item li.bold_shortjump_link a {
+    font-weight: bold;
+    color: black;
+}
+
+
+/* following are for short_jump list *****************************/
+div.info_line div.shortview_jump_container {
+    display: inline-block; 
+
+}
+
+div.info_line div.shortview_jump_container span {
+    display: inline-block;
+    font-size: 60%;
+    color: #444444;
+
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    
+    border: 6px solid #dfdfdf;
+    background: #bebebe;
+}
+div.info_line div.shortview_jump_container span a {
+    text-decoration: none;
+
+}
+
+div.info_line div.shortview_jump_container span.bold_shortjump_link a {
+    font-weight: bold;
+    color: #444444;
+}
+
+div.info_line div.shortview_jump_container span.bold_shortjump_link a:link {
+    color:black;
+}
+
+div.info_line div.shortview_jump_container span a:link,
+div.info_line div.shortview_jump_container span a:hover
+{
+    color: #444444;
+    cursor: pointer;
+}
+
+div.info_line div.shortview_jump_container span a:hover
+{
+    text-decoration:underline;
+}
+
+/* GRID GROUPS ****************************************************************** */
+
+tr.items.grid_group_list_item td {
+    
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+
+/* ****************************************************************** */
+
+li.term_line span.search_result {
+    color: #990000;
+}
+
+/****sidebar, which is now main blocks (shortcut bar to main body)********************************/
+
+div#mcontent  div.depthShortcutMsg {
+    float: left;
+    margin-top: 4px;
+
+}
+
+div#sidebar div.depthShortcutMsg span.label {
+    font-size: 85%;
+    color: #666666;
+    padding-left: 5px;
+}
+
+td#dw_widgets div.depthShortcutMsg select#depth_sel {
+    font-size:80%;
+    border: 1px solid #cccccc;
+    margin-bottom: 5px;
+    background-color: white;
+    color: #333333;
+    -moz-appearance: none;   
+    
+}
+
+td#dw_widgets div.depthShortcutMsg select#workset_sel {
+    font-size:80%;
+    border: 1px solid #cccccc;
+    background-color: white;
+    color: #333333;    
+    -moz-appearance: none;
+    
+}
+
+#sidebar div.depthShortcutMsg {
+    padding-top: 2px;
+    padding-left: 10px;
+    display: inline-block;
+    width: 99%;
+    padding: 8px;
+
+}
+
+#sidebar .depthShortcutMsg form {
+    display: inline-block;
+    padding-left: 8px;
+    float: left;
+}   
+
+/*#messageLine*/
+div#messageLine {
+/*    float: right;*/
+    color: #990000;
+    font-size:60%;
+    padding-top: 2px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+div.depthShortcutMsg span.user_data {
+    color: #999999;
+    float: right;
+    font-size: 80%;
+}
+
+
+/**relx list on itemlist display********************************************/
+
+td.id_cell_psd {
+    width: 50px;
+    font-size: 80%;
+}
+
+/* e_item_list.html needs a wider cell here */
+table.e_list td.id_cell_psd {
+    font-size: 80%;
+}
+
+
+div#mcontent table.item_table td.pathLength {
+    width: 30px;
+    text-align: center;
+    font-size: 75%;
+    color: #999999;
+}
+
+td.id_cell_psd a.add-plus, div.add_relx_link a.add-plus {
+    /* plus sign on pmid and relx to add new child/relx */
+    font-weight: bold;
+    font-size: 10pt;
+}
+/********* more stuff ************************************************/
+
+.noteplus {
+    color:  #666666;
+    font-size: 110%;
+}
+
+span.noteplus:hover {
+ text-decoration:underline;color:#444444;
+ cursor: pointer;
+}
+
+span.noteplus a:link,
+span.noteplus a:visited {
+    text-decoration:none;
+    color: #444444;
+}
+
+
+/** this is for the safe save (live save / stash) link ********/
+td.stash_link, td.stash_show { 
+    float: right; /* was text-align: right */
+}
+td.stash_link span.expando, td.stash_show span.expando {
+    font-size: 90%;
+    color: #332399;
+    cursor: pointer;
+    background: #cccccc;
+    display: block;
+    padding: 4px;
+}
+
+td.stash_link input {
+    margin-top: 4px;
+
+}
+
+td.stash_link span.expando:hover {
+    background: #dddddd;
+}
+
+td.cancel_link {
+    vertical-align: top;
+    padding-top: 4px;
+    float:right;
+}
+
+td.cancel_link span {
+    font-size: 80%;
+    color: #332399;
+    cursor: pointer;
+    background: #dddddd;
+    padding: 4px;
+}
+td.cancel_link span a:link {
+    text-decoration:none; 
+}
+td.cancel_link span:hover {
+    background: #aaaaaa;
+}
+
+
+
+/** page tagging widget ********************/
+ul.item_detail_widgets li.tagged_page {
+    /*font-size: 120%;
+    padding-left:4px;
+    padding-top:2px;
+    color: #bbbbbb;*/
+
+}
+ul.item_detail_widgets li.tagged_page:hover {
+    cursor:pointer;
+    color: yellow;
+}
+
+
+/* live_link very specific, need to back up to table > to make the color stick
+   during hover, etc */
+table.e_list div.item_details_block ul.item_detail_widgets li.tagged_page.tp_hilite {
+    color: #aa2222;
+}
+
+table.e_list div.item_details_block ul.item_detail_widgets li.shortlist.sl_hilite {
+    color: #22aa22;
+}
+
+table.e_list div.item_details_block ul.item_detail_widgets li.start_folded.sf_hilite {
+    color: #ffbb00;
+}
+
+
+/** this is for  the progressive disclosure widget **/
+
+div#mainContainer div#mcontent table.psd_table td.itemtd.id_cell_psd span.expando,
+div#mainContainer div#mcontent table.psd_table td.itemtd.id_cell_psd span.foldo
+{
+    font-size: 130%;
+    color: #fefefe;
+    cursor: pointer;
+    
+}
+
+/** hover seems to be the only one that works for a non-href element **/
+div#mainContainer div#mcontent table.psd_table td.itemtd.id_cell_psd span.expando:hover
+{
+    font-size: 130%;
+    color: #880000;
+}
+
+
+/** if item has no children, give it marker, subtle color **/
+div#mainContainer div#mcontent table.psd_table td.itemtd.id_cell_psd span.hideo
+{
+    font-size: 130%;
+    color: #cccccc;
+
+}
+
+/** if item has children, but its start_folded is true **/
+div#mainContainer div#mcontent table.psd_table td.itemtd.id_cell_psd span.foldo
+{
+    font-size: 130%;
+    color: #000088;
+
+}
+
+
+
+/*** based on OLDER CODE but still in use ************************************************/
+
+#headerx {
+    background: #dedede; /*#dedede;	*/
+    height: 40px;
+    padding-right: 5px;   
+    /*border-bottom: 2px dotted #ffffff;*/
+		       
+}
+
+#pagecrumb {
+	/* float: right;	 */
+	vertical-align: bottom;  
+	font-size: 13px;
+	float: left;
+	line-height: 35px;
+
+	height: 20px;
+	margin-top: 3px;
+	margin-left: 30px;
+
+}
+
+.hxtitle {
+	font-size: 18px;
+	float: left;
+	line-height: 35px;
+	margin-left: 10px;
+}
+.hxtitle  a:link {text-decoration:none;}
+
+.homeTitle {
+	color: #5555bb;
+}
+
+
+
+
+/* chrome likes this, FF does not */
+#searchFx {
+    width: 100px;
+    margin-left: 20px;
+    border-style: solid;
+    border-color: transparent;
+}
+
+#fetchID {
+    width: 60px;
+    margin-left: 10px;
+    border-style: solid;
+    border-color: transparent;    
+}
+
+/* was #sidebar*/
+div#headerx div.ssearch {
+    float: right;
+    margin-top: 10px;
+}
+
+div.ssearch input {
+    font-size:70%;
+}
+
+div.ssearch form input[type="submit"] {
+    background-color: #eeeeee;
+}
+
+ul.hxbuttons {
+    font-size: 85%;
+    float: right;
+    display: inline;
+}
+
+.hxbuttons  a:link {text-decoration:none;}
+.hxbuttons  a:visited {text-decoration:none;}
+.hxbuttons  a:hover {text-decoration:underline;}
+.hxbuttons  a:active {text-decoration:underline;}
+
+ul.hxbuttons li  {
+	color: #aaaaaa;
+	list-style: none;
+	display: inline;
+	margin-right:10px;
+	font-size: 85%
+}
+
+/************** optionBar *********************/
+
+div#optionBar {
+    background-color: yellow;
+}
+
+div.today_form {
+    margin-right:100px;
+}
+
+ul.txbuttons {
+    float: right;
+    font-size: 85%;
+    display: inline;
+    /*background-color: pink;*/
+    padding-top: 6px;
+    padding-bottom: 4px;
+    padding-right: 10px;
+    border: 1px dotted #cccccc;    
+}
+
+input#today_submit {
+    float: right;
+    color: #000088;
+    margin-top: 0px;
+}
+
+
+ul.txbuttons li  {
+    list-style: none;
+    display: inline;
+    margin-right:10px;
+    font-size: 90%;
+    color: #5555dd;
+}
+
+
+
+
+
+/************* mainContainer ******************/
+#mainContainer {
+	clear: both;
+}
+
+/****************** sidebar ******************/
+
+#sidebar {
+    /* removed border 2/10/17
+	border-style: solid;
+	border-width: 1px;	
+	border-color: #cccccc; */
+	padding-bottom: 4px;
+}
+
+#sidebar h5 { 
+	display: inline;
+	padding-left: 14px;
+}
+#sidebar ul { 
+	display: inline;
+ }
+#sidebar ul li {
+	background: #cdcdcd;
+	padding: 1px;
+	/*list-style: none; knockout 2/3/2017*/
+	display: inline;
+	margin-right:10px;
+	font-size: 90%;
+}
+
+
+#sidebar  a:link {text-decoration:none;}
+#sidebar  a:visited {text-decoration:none;}
+#sidebar  a:hover {text-decoration:underline;}
+#sidebar  a:active {text-decoration:underline;}
+
+
+#sidebar li {	
+	padding-bottom: 6px;
+}
+
+#sidebar ul {
+	/* list-style-type: none; */
+	padding: 2px;
+	margin-left: 12px;
+	font-size: 80%;
+}
+
+#sidebar p {
+	font-size: 80%;
+}
+
+/* wow, very non-specific */
+th {
+    font-size: 80%;
+    padding-top: 10px;
+}
+
+.items {
+        font-size: 90%;
+	background: #dedede;
+    }
+
+.itemtd {
+	padding: 8px;	
+	/*color: #444444;*/ /* color is now in the tr rule for these tables 
+          to permit overriding on the row for "done" items */
+}
+
+
+
+.time, p.footertime {
+	font-size: 70%;
+	clear: both;
+	padding-top: 20px;
+	text-align: right;
+}
+
+/* div is newer modeling */
+div.footertime {
+    font-size: 70%;
+    color: #888888;
+    clear: both;
+    padding-top: 20px;
+    text-align: right;
+}
+
+
+td.titlecol a {
+    width: 45%;
+    color: blue;
+}
+
+td.titlecol   a:link {text-decoration:none;color:blue;}
+td.titlecol a:visited {text-decoration:none;color:blue;}
+td.titlecol  a:hover {text-decoration:underline;color:blue;}
+td.titlecol  a:active {text-decoration:underline;color:blue;}
+
+table.item_table {
+    /* main table width 
+    width: 90%; */
+    padding-right: 20px;
+    padding-left: 10px;
+    background-color: #dedede;
+}
+
+div#mainContainer div#mcontent form table.psd_table.item_table tr.items td.itemtd.note_cell_psd {
+    text-align: center;
+
+}
+
+
+/*** GRID ************************************************/
+
+#mainGrid {
+    /* border: solid 1px #cccccc; */
+	margin-top: 1px;
+}
+
+/* reduce spacing between inline blocks to tighen up note oplus placement */
+span.item_title.etn, span.item_title.etn span  {
+    margin-right: -4px;
+}
+    
+/* border on gridCell */
+div.gridCell { border: 1px solid #242424;    }
+div.gridCell {     background-color: rgb(202, 202, 202); }
+
+/* the grid cell background */
+div.gridCell.grid_order_1 {     background-color: rgb(243,243,243) ; }
+div.gridCell.grid_order_2 {     background-color: rgb(239, 239, 239);  }
+/*div.gridCell.grid_order_3 {     background-color: rgb(223, 223, 223); }*/
+div.gridCell.grid_order_3 {     background-color: rgb(202, 202, 202);   }
+div.gridCell.grid_order_4 {     background-color: rgb(168, 168, 168); }
+div.gridCell.grid_order_5 {     background-color: rgb(135, 135, 135); }
+div.gridCell.grid_order_6 {     background-color:  rgb(150, 140, 140); }
+div.gridCell.grid_order_7 {     background-color: rgb(160,168,168); }
+div.gridCell.grid_order_8 {     background-color: rgb(190,202,202) ; }
+div.gridCell.grid_order_9 {     background-color: rgb(200,210,210) ; }
+
+
+.gridCell {
+    background: #b3b2b2; /*#cccccc;*/
+    font-size: 80%;
+    margin: 10px;
+    float: left;
+    padding: 4px;
+    width: 300px;
+    height: 320px;
+    color: #444444;
+}    
+
+.gridCell  a:link, .gridCell a:visited {
+    text-decoration:none;
+    color: #444444;
+}
+
+.gridCell  a:hover {
+    text-decoration:underline;
+}
+
+
+/* adorn for grid view */
+/*div#mainGrid div.gridCell div.gridItemList div.itemd a.adorn_3*/
+div.gridCell div.itemd span.adorn_1 {background: pink;      margin-right: 4px;}
+div.gridCell div.itemd span.adorn_2 {background: #ffff99;   margin-right: 4px;}
+div.gridCell div.itemd span.adorn_3 {background: #ffccaa;   margin-right: 4px;}
+div.gridCell div.itemd span.adorn_4 {background: #88aaaa;   margin-right: 4px;}
+div.gridCell div.itemd span.adorn_5 {background: #aaaa88;   margin-right: 4px;}
+
+
+.gridCell img {
+    margin-right: 10px;
+    margin-top: 3px;
+
+}
+
+.grid_cell_title {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: 7px;
+}
+
+span.gr_order {
+    font-size: 70%;
+    color: #ffffff;
+    float: right;
+
+}
+
+.gridItemList {
+    overflow-y: auto;
+    height: 285px;
+}
+
+
+.gridCell .itemd {
+        margin-top: 4px;
+	margin-left: 15px;
+	/* was -10 */
+	text-indent: -14px;
+}
+
+.gridCell .gridDetail {
+        color: white;
+	font-size: 70%;
+}
+
+.gridview_print_view_only {
+    display: none;
+}
+
+div.itemd.gridview_not_print_view {
+    padding-bottom: 4px;
+}
+
+div.gridview_not_print_view span {
+    padding-right: 5px;
+}
+
+div.gridview_not_print_view span.priority_block_1 {
+    padding-left: 5px;
+    border-left: 4px solid green;
+    cursor: pointer;
+    
+}
+div.gridview_not_print_view span.priority_block_2 {
+    padding-left: 5px;
+    border-left: 4px solid orange;
+    cursor: pointer;
+    
+}
+div.gridview_not_print_view span.priority_block_3 {
+    padding-left: 5px;
+    border-left: 4px solid red;
+    cursor: pointer;
+    
+}
+div.gridview_not_print_view span.priority_block_4 {
+    padding-left: 5px;
+    border-left: 4px solid blue;
+    cursor: pointer;
+    
+}
+div.gridview_not_print_view span.priority_block_5 {
+    padding-left: 5px;
+    border-left: 4px solid #dddddd;
+    cursor: pointer;   
+}
+
+/** priority change arrows on grid view **/
+span.p_arrows {
+    display: none;
+
+}
+
+/****************************************/
+
+#sidebar .all_set {
+    display: none;
+    padding: 0px 10px 0px 10px;
+}
+#sidebar li.all_set {
+    background: green;
+    margin: 4px;
+}
+
+.item_title_psd {
+    font-size: 95%; }
+
+/**** file lock icon ****/
+span.lock_file_image {
+    width: 20px;
+    height: 20px;
+    background-image: url(https://media.bernardhecker.com/images/red1lock.png);
+    background-size: contain;
+    display: inline-block;
+}
+
+div.doLink a:link { color: #000088; }
+div.doLink a:visited { color: #000088; }
+div.doLink a:hover { color: #0000ff; }
+div.doLink {
+    font-size: 90%;
+}
+
+
+table.skinny {
+    /*font-family: courier;*/
+    font-size: 90%;
+    color: #444444;
+    width: 85%;
+}
+
+table.skinny td {
+    padding-top: 5px;
+    padding-bottom: 4px;
+
+}
+
+table.skinny .row1 {
+    background-color: #ffeeee;
+
+}
+table.skinny .strong {
+    font-weight: bold;
+}
+table.skinny td.skinny_date{
+    width: 100px;
+}

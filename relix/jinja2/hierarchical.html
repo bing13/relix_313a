@@ -1,0 +1,248 @@
+{% extends "j2_relix_base.html" %}
+{# RELIX DJANGO3 # ----------------------------------------------------------------------------------- #}
+{% block content %}
+    
+    {% if current_items %}
+	<form action="/relix/itemsedit/" method="post">
+	    {{ csrf_input }}
+	    <input type="hidden" name="uuid" value={{ uuid }}>	    
+	    {# - BEGIN TABLE WIDGET TABLE -------------------------------------------------------------  #}
+
+	    <div class="depthShortcutMsg"  >
+		<select id="depth_sel" name="selDepth" onChange="(showDepth(this.value))"   >
+		    <option value="99" selected="selected">&nbsp;</option>
+		    <option value="0" >0</option>
+		    <option value="1" >1</option>
+		    <option value="2" >2</option>
+		    <option value="3" >3</option>
+		    <option value="4" >4</option>
+		    <option value="5" >5</option>
+		    <option value="6" >6</option>
+		    <option value="7" >7</option>
+		    <option value="8" >8</option>
+		    <option value="9" >99</option>
+		</select>
+	    </div>
+	    
+	    <div class="info_line">
+		<ul class="statusLine">
+		    
+		    <li class="doLink">{{ request.session[uuid].fetch_root }} {{ request.session[uuid].fetch_type }}</li>
+		    <li class="doLink" >n: {{ current_items|length }}</li>
+		    <li class="doLink"> <a href="/relix/tree/{{ request.session[uuid].fetch_root }}/10">tree view</a></li>
+		    {% if request.session[uuid].fetch_type == 'my_root' %}<li class="doLink"><a href="/relix/addrootnode/">add root node</a></li>
+		    {% elif request.session[uuid].include_archived == False %}<li class="doLink">+<a href="/relix/{{ target_id }}/view/arc/">reload w/archived</a></li>
+		    {% elif request.session[uuid].fetch_type != 'search' %}<li class="doLink">-<a href="/relix/{{ target_id }}/view/">reload w/o archived</a></li>
+		    {% endif %}
+		</ul>
+	    </div>
+	    
+	    {# - BEGIN MAIN ITEM TABLE -------------------------------------------------------------------------------------------------------------------  #}
+	    <table class="e_list psd_table item_table">
+		{# submit button dummy row  #}
+		<tr>
+		    <td></td>
+		    <td class="people_header_spacer"></td><td class="dates_header_spacer"></td><td class="priority_header_spacer"></td><td class="status_header_spacer"></td>
+		    <td class="button_row_cell"><input id="action_button_top" class="notes_button"  type="submit" value="&nbsp;&nbsp;&nbsp;go&nbsp;&nbsp;&nbsp;" /></td>
+		</tr>
+
+		
+		{# - header row ---------------------------------------------------  -#}
+		<tr class="item_table_header">
+		    <th>id</th><th class="titlecol">title</th>
+
+		    <th id="people_cell_column_label">ppl</th><th id="dates_cell_column_label">dates</th><th id="priority_cell_column_label">priority&nbsp;<span class="noteplus"><a href="/relix/{{ target_id }}/hotsearch/{{ uuid }}">&oplus;</a></span></th><th id="status_cell_column_label">status</th>
+		</tr>
+		
+		<tr class="items fetchroot_ancestors">
+		    <td colspan="2">
+			{# - show the ancestor crumbs of the fetchroot item on an itemlist  -#}
+			<span class="parentCrumb">
+			    {% if target_ancestors|length == 0 %}
+				TRUNK ITEM
+			    {% else %}
+				
+   				{% for anc in target_ancestors|reverse %}<span class="parent_crumb_item"><a href="/relix/{{ anc.pmid }}/view/" class="parentLink item_title_linkout">{{ anc.title }}</a></span>
+				{% endfor %}
+			    {% endif %}
+			</span>
+		    </td>
+		    <td class="people_header_spacer">{# people #}</td>
+		    <td class="dates_header_spacer">{# dates #}</td>
+		    <td class="priority_header_spacer">{# priority #}</td>
+		    <td class="status_header_spacer">{# status #}</td>		    
+		</tr>
+		{# - BEGIN MAIN LOOP ------------- HYPEN % } removes whitespace before and after block------------------------------  #}
+		{% for ci in current_items -%}
+		    <tr id="{{ ci.pmid }}" class="items path_length_{{ ci.path_length }} status_{{ ci.status }} workset_{{ ci.work_set }} sfolded_{{ ci.start_folded }}
+			    {% if ci.priority|int >= 1 and ci.priority|int <= 5 or ci.status|int == 1 or ci.status|int == 2 %} hot_item {% else %} not_hot {% endif %} archived_{{ ci.archived }}{% if ci.hasNote == True %} has_note {% endif %}{% if ci.sectionhead == True %} sectionhead {% endif %} adorn_{{ ci.adorn }}" >
+			{# - ID and ITEM SELECT CELL --------------------------------------------------------  -#}
+			{% if ci.jumplink == True -%}
+			    {% if ci.jumpcolor != None and ci.jumpcolor != '' -%}
+				<td class="itemtd id_cell_psd" style="border-left:5px solid {{ ci.jumpcolor }};">
+			    {% else %}
+				    <td class="itemtd id_cell_psd" style="border-left:5px solid #82828c;">
+			    {% endif %}			 
+			{% else %}
+			    <td class="itemtd id_cell_psd" style="border-left:5px solid transparent;" >
+			{% endif %}
+			
+			{# - set up children hide/show expando widget, PMID, addNote -------------------  -#}
+			{# only get away with putting steps on their own lines is b/c the ID cell is fixed width 58 pixels #}
+			{% if  request.session[uuid].include_archived == False -%}
+			    {% set kid_ids = ci.kid_ids_no_arc %}
+			    {% if kid_ids|length > 0 and not ci.start_folded -%}
+				<span onClick="childrenToggle( {{kid_ids}} );" class="expando">&squf;</span>{% elif kid_ids|length > 0 and ci.start_folded  %}<span onClick="childrenToggle( {{ kid_ids }} );" class="foldo">&squf;</span>{% else %}<span class="hideo">&squf;</span>{% endif -%}
+			{% else %}
+			    {% set kid_ids = ci.kid_ids_w_arc %}
+			    {% if kid_ids|length > 0 -%}
+				<span onClick="childrenToggle( {{ kid_ids }} );" class="expando">&squf;</span>{% else %}<span class="hideo">&squf;</span>{% endif %}{% endif %}&nbsp;<a href="/relix/{{ ci.pmid }}/view/" class="item_title_linkout">{{ ci.pmid }}</a> 
+			<span class="item_select_widgets">
+			    <input type="checkbox" name="itemSelect" value="{{ ci.pmid }}" ><input type="radio" name="grab" value="{{ ci.pmid }}"> 
+			</span>
+			    </td>
+			    {# - --------------------------------------------------------------------------------------------------------  -#}
+			    {# - PAD/BULLET/TITLE sub-table -----------------------------------------------------  -#}
+			    <td class="itemtd" onClick="more_features( {{ ci.pmid }} );Elist_item_widgets_toggle( {{ ci.pmid }} );">
+				{# - ITEMLIST - HIERARCHICAL TITLE  ----------------------------------------------------------------- HIER  -#}
+				<div class="title_block">
+				    <div class="bull_indent" style=" padding-left:{{ (( ci.path_length/15)*250)|int }}px; padding-right:8px;" >
+					{# widthratio ci.path_length|add(0) 15 250 -#}
+					<ul>
+					    <li class="depth{{ ci.path_length }} item_title">
+						{% if ci.pmid in lock_file_list -%}<span class="lock_file_image"></span>{% endif %}
+						<span class="depth{{ ci.path_length }} item_title">
+						    <a href="/relix/{{ ci.pmid }}/edit/n/{{ uuid }}" class="item_title_linkout">{{ ci.title|safe }}</a>{% if ci.webpage_set%}<span class="wopf">&wopf;{% endif %}</span></span>
+						<span class="shownote_widget"
+						      {% if ci.hasNote == True -%} onClick='window.open("/relix/{{ ci.pmid }}/shownote/{{ uuid }}", "_blank","toolbar=no,scrollbars=yes,resizable=yes,width=600,height=600");' class="detail_noteplus item_title_linkout">&oplus;{% else %}>{% endif %}
+						</span>
+
+						{# - TRUNK WORKSET TEXT  ---------------------------------------------------------------------------------------  -#}
+						{#     if Trunk, write work set  #}
+						{% if request.session[uuid].fetch_type in ['my_root'] %}
+						    <span class="trunk_workset_label">{{  ci.work_set }}</span>
+						{% endif %}
+
+					    </li>
+					</ul> 
+				    </div>
+				</div>
+				{# - end sub-table --------------------------------------------------  -#}
+				{# - related-to links -----------------------------------------------  -#}
+				{% if ci.rel_content|length > 0 -%}
+				    {% for rx in ci.rel_content -%}
+					<div class="related {% if rx.status == '9' %}done{% endif %}" style=" padding-left:{{ ((ci.path_length/15)*250)|int }}px; padding-right:8px;" >
+					    <a href="/relix/{{ ci.pmid }}/rel_content/{{ rx.pmid }}/changerel/{{ uuid }}">related to</a>:
+					    <a href="/relix/{{ rx.pmid }}/view/">{{ rx.pmid }}:{{  rx.title }}</a>
+					    <span class="shownote_widget"
+						  {% if rx.hasNote == True -%} onClick='window.open("/relix/{{ rx.pmid }}/shownote/{{ uuid }}", "_blank","toolbar=no,scrollbars=yes,resizable=yes,width=600,height=600");' class="detail_noteplus item_title_linkout">&oplus;{% else %}>{% endif %}
+					    </span>
+					    
+					</div>
+				    {% endfor %}
+				{% endif %}
+				{# - --------END TITLE_BLOCK ----------  -#}
+				{# - BEGIN ITEM DETAIL and PEOPLE BLOCKS ---------------------------------------------------------------- -#}
+				<div class="item_details_block"   id="detail_pane{{ ci.pmid }}" >
+				    <ul class="item_detail_widgets" id="mf{{ ci.pmid }}" ></ul >
+				</div>
+				<div class="item_details_block"  id="people_pane{{ ci.pmid }}" >
+				    <ul class="item_people_assigned" id="ap{{ ci.pmid }}" ></ul >
+				    <ul class="item_people_involved" id="ip{{ ci.pmid }}" ></ul >				
+				    {# was ul class="item_people_widget #}
+				</div>
+
+				{# - END ITEM DETAIL and PEOPLE BLOCKS ---------------------------------------------------------------------------- -#}
+			    </td>
+			    {# - END OF MAIN ITEM TD CELL ------------------------------------------------------------------------------------------  -#}
+
+
+			    {# - PEOPLE ASSIGNED CELL ---------------------------------------------------------------------------------------  -#}
+
+			    <td class="itemtd people" id="item_people{{ ci.pmid }}" onClick="assign_people( {{ ci.pmid }} );"    >
+				{% for ax in ci.assigned -%}
+				    <span class="assigned_to">{{ ax.nickname }}</span>
+				{% endfor %}
+				<br/>
+				{% for ix in ci.involves -%}
+				    <span class="involves">{{ ix.nickname }}</span>
+				{% endfor %}
+			    </td>
+
+			    {# - DATE CELL ---------------------------------------------------------------------------------------  -#}
+			    <td class="itemtd dates">
+				{{ ci.dtCreated.astimezone().strftime( '%Y-%m-%d' ) }} <br/>
+				{{ ci.dtModified.astimezone().strftime( '%Y-%m-%d'  ) }}
+				{% if  ci.reminder_date != None -%}
+				    <span class="reminder_date {% if ci.reminder_date < todaydate %} late {% endif %}"    >{{ ci.reminder_date }}</span><br/>
+				{% endif %}
+			    </td>
+			    {# - ----------- PRIORITY AND STATUS ---------------------------------------------  -#}
+			    <td class="itemtd priority" >
+				<select name="priority_j" class="ps_select priority_{{ ci.priority }}"  onchange="priority_status_update(this)">
+				    {% for cid, ctext in PCHX -%}
+  					<option value="{{ cid }}" {% if cid == ci.priority %} selected{% endif %}>{{ ctext }}</option>
+				    {% endfor %}
+				</select>
+				<span class="printonly priority">{{ ci.priority_chx() }}</span>
+			    </td>
+			    <td class="itemtd status">
+				<select name="status_j" class="ps_select" onchange="priority_status_update(this)">
+				    {% for cid, ctext in SCHX -%}
+  					<option value="{{ cid }}" {% if cid == ci.status %} selected{% endif %}>{{ ctext }}</option>
+				    {% endfor %}
+				</select> 
+				<span class="printonly status">{{ ci.status_chx() }}</span>
+ 			    </td>
+		    </tr>
+		{% endfor %}  {# - main table loop ends  #}
+
+		{# - LOWER SUBMIT BUTTON #}
+		<tr>
+		    <td></td>
+		    <td class="people_header_spacer"></td><td class="dates_header_spacer"></td><td class="priority_header_spacer"></td><td class="status_header_spacer"></td>
+		    <td class="button_row_cell"><input id="action_button_bottom" class="notes_button"  type="submit" value="&nbsp;&nbsp;&nbsp;go&nbsp;&nbsp;&nbsp;" /></td>
+		</tr>
+		
+	    </table>
+	    {# - END MAIN TABLE  -------------------------------------------------------------------------  -#}
+	    
+	    {# - CHANGE ITEMS BLOCK (items_edit) -----------------------------------------------------------------  #}
+	    
+	    <div class="submit_lower">
+		    <span>
+			move&nbsp;to&nbsp;pmid:&nbsp;<input type="text" id="pmid_manual" name="pmid_manual" value="">
+		    </span>
+		    <span>
+			change priority:
+			<select id="priority_change" name="priority_change">
+    			    <option value="-99" selected="selected">no change</option>
+			    {% for cid, ctext in PCHX -%}
+  				<option value="{{ cid }}" >{{  ctext }}</option>
+			    {% endfor %}
+			</select>
+		    </span>
+		    <span>change&nbsp;status:&nbsp;<select id="status_change" name="status_change"><option value="-99" selected="selected">no change</option>{% for cid, ctext in SCHX -%}<option value="{{ cid }}" >{{ ctext }}</option>{% endfor %}</select></span>
+	    </div>
+	    
+	</form>
+    {% else %}
+	<p>No items are available. Are they archived?</p>
+    {% endif %}
+    <div  class="footertime">
+	<div>h2:{{ todayx }}</div>
+	<div>uuid:{{ uuid }}</div>
+    </div>
+
+    {# 	hidechildren didn't work at the top of this template. $(document).ready might be confused by the fact
+    that this is an "included" file? seems unlikely but... #}
+    
+    <script>
+     $(document).ready(hideChildren({{ all_start_folded_kids }} ));
+     {% if scrollTo %}
+     $(document).ready(function(){ window.location = '#{{ scrollTo }}' });
+     {% endif %}
+    </script>
+
+
+{% endblock content %}

@@ -1,0 +1,34 @@
+{% extends "j2_relix_base.html" %}
+{% block content %}
+    
+    
+    <h2><a href="/relix/">relix home</a></h2>
+    <div id="mcontent">
+	<!-- this is where the header "body" appears -->
+	{#  % block content %}{% endblock % #} 
+	{% if current_items %}
+	    <h2>simplest_item_list.html</h2>
+	    <table class="skinny">
+		<tr><th>pmid</th><th>kids</th><th>title</th><th>last mod</th></tr>
+		{% for ci in current_items %}
+		    
+		    <tr >
+			<td><a href="/relix/{{ci.pmid}}/view/">{{ci.pmid}}</a></td>
+			<td><a href="/relix/{{ci.pmid}}/{{uuid}}">detail</a></td>  			
+			<td>ci.count_of_descendants() </td>
+			{# div class="related" style=" padding-left:{{ ((ci.path_length/15)*250)|int }}px; padding-right:8px;" > #}
+			<td style=" padding-left:{{ ((ci.path_length/15)*250)|int }}px;" >{{ci.title}}</td>
+			<td class="skinny_date">  {{ ci.dtCreated.strftime( '%Y-%m-%d' ) }}</td>
+		    </tr>			    
+		{% endfor %}
+		
+	    </table>
+	    
+	{% else %}
+	    <p>No items are available.</p>
+	{% endif %}
+	
+	
+	
+    </div>
+{% endblock %}

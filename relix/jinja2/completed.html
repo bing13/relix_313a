@@ -1,0 +1,21 @@
+{% extends "j2skinny_base.html" %}
+{% block content %}
+
+    <h1 class="homeTitle">{{ targetID }}: {{ popup_msg }}</h1>
+
+    <form>
+	{{ csrf_input }}
+	<br/>    <br/>    <br/>
+	<h4>please close this window.</h4>
+	<br/>
+
+
+    <input id="completed_close_window" class="close_button" type="submit" value="Close Window"
+	   onClick='window.close()' />
+
+</form>
+
+    
+{% endblock %}
+ 
+

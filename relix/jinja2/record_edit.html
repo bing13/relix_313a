@@ -1,0 +1,328 @@
+{% extends "j2_relix_base.html" %}
+
+
+{# RELIX DJANGO3 # ----------------------------------------------------------------------------------- #}
+{% block content %}
+
+    {#  FORMS USE STANDARD TEMPLATING #}
+    <script type="text/javascript" src="/static/ckeditor/ckeditor-init.js"></script>
+    <script type="text/javascript" src="/static/ckeditor/ckeditor/ckeditor.js"></script>
+    <script type="text/javascript" src="/static/ckeditor/ckeditor/adapters/jquery.js"></script>
+    <script>
+     {
+	 $("td#cknotetext").ckeditor();
+     }     
+    </script>
+
+
+    
+    <h3><span onClick="rt_header_toggle();" class="shownote_header_widget">&pm;</span>{{ ix.pmid }} {{ ix.title }}</h3> 
+    <div class="rt_hier_rel_container">
+	<p class="rt_goto">
+	    go to:<a href="/relix/{{ix.pmid}}/view/">{{ix.pmid}}</a>
+	    {% if request.session[uuid].fetch_root  != '-9' %}
+		| <a href="/relix/{{request.session[uuid].fetch_root}}/view/">{{request.session[uuid].fetch_root}} (fetch_root)</a>
+	    {% endif %}
+	</p>
+	
+	<div class="rt_anc_crumb">
+	    <h5>ancestors</h5>
+	    <!-- ancestors ----------------------------------------------- -->
+	    <ul>
+		{% for anc in target_ancestors %}
+		    <li><a href="/relix/{{ anc.pmid }}/view/" class="parentLink">{{ anc.title}}</a></li>
+		{% endfor %}
+	    </ul>
+	</div>
+	
+	<div class="rt_related">
+	    <!-- related items ----------------------------------------------- -->
+	    
+	    {% if ix.rel_content|length > 0 %}
+		<h5>related</h5>
+		<ul>
+		    {% for rx in ix.rel_content %}
+			<li><a href="/relix/{{rx.pmid}}/view/">{{rx.pmid}}:{{rx.title}}</a></li>
+		    {% endfor %}
+		</ul>
+	    {% endif %}
+	    
+	</div>
+    </div>
+    <div class="nofloat"></div>
+    
+    <!-- -- FORM BEGINS -------------------------------------------------------------------------------- -->
+    {% if qnote == 'y' %}
+	<form action="/relix/{{ix.pmid}}/edit/q/{{ uuid }}" method="post" class="rt_form" id="edit_form">
+	    <input type="hidden" name="is_qnote" id="id_is_qnote" value="yes" >
+    {% else %}
+	    <form action="/relix/{{ix.pmid}}/edit/n/{{ uuid }}" method="post" class="rt_form" id="edit_form">
+		<input type="hidden" name="is_qnote" id="id_is_qnote" value="no">
+    {% endif %}
+    {{ csrf_input }}
+    {{ form.non_field_errors() }}
+
+    <!-- https://docs.djangoproject.com/en/2.0/ref/forms/widgets/  -->
+    <input type="hidden" name="uuid" value={{ uuid }}>
+    <table>
+	<tr class="rt_submit upper">
+	    <td class="update_button_cell">
+		{#<input id="action_button_top" class="notes_button" type="submit" value="Save" />#}
+
+		{#  submit w/windowsize (for mobile) #}
+		<input type="button"  value="Update"  onClick='set_windowsize_field();  $( "#edit_form" ).trigger( "submit" );' >     
+	    </td>
+
+	    <td class="cancel_link">
+		<span><a href="/relix/{{ ix.pmid }}/{{ request.session[uuid].fetch_root }}/cancel_edit/{{ uuid }}">cancel</a></span>
+	    </td>
+	    
+	</tr>
+	
+    </table>
+    
+    <table class="rt_table">
+	
+	<tr id="pmid">
+	    <td class="rt_label">{{ form.pmid.label_tag() }}</td>
+	    <td class="rt_field">{{ form.pmid }}</td>
+	    <td class="rt_error">{{ form.pmid.errors }}</td>
+	    <td></td> <td></td><td></td>
+	</tr>
+	<tr id="title">
+	    <td class="rt_label">{{ form.title.label_tag() }}</td>
+	    <td class="rt_field" colspan="4">{{ form.title }}</td>
+	    <td class="rt_error">{{ form.title.errors }}</td>
+	</tr>
+	<tr>
+	    <td class="rt_label">{{ form.priority.label_tag() }}</td>
+	    <!-- remove_null_option class flags javascript removal of "--------" option value, which doesn't validate -->
+	    <td class="rt_field remove_null_option">{{ form.priority }}</td>
+	    <td class="rt_error">{{ form.priority.errors }}</td>
+
+	    <td class="rt_label">{{ form.status.label_tag() }}</td>
+	    <td class="rt_field remove_null_option">{{ form.status }}</td>
+	    <td class="rt_error">{{ form.status.errors }}</td>
+	</tr>
+
+	<tr>
+	    <td class="rt_label">{{ form.work_set.label_tag() }}</td>
+	    <td class="rt_field">{{ form.work_set }}</td>
+	    <td class="rt_error">{{ form.work_set.errors }}</td>
+	    
+	    <td class="rt_label people">{{ form.assigned_to_peoples.label_tag() }}</td>
+	    <td class="rt_field">{{ ix.assigned_to_peoples}}</td>
+	    <td class="rt_error"></td>
+	</tr>
+
+	<tr>
+	    <td class="rt_label">{{ form.topSort.label_tag() }}</td>
+	    <td class="rt_field">{{ form.topSort }}</td>
+	    <td class="rt_error">{{ form.topSort.errors }}</td>
+	    
+	    <td class="rt_label people">{{ form.involves_peoples.label_tag() }}</td>
+	    <td class="rt_field">{{ ix.involves_peoples}}</td>
+	    <td class="rt_error"></td>
+	</tr>
+
+	<tr>
+	    <td class="rt_label group">{{ form.sectionhead.label_tag() }}</td>
+	    <td class="rt_field">{{ form.sectionhead }}</td>
+	    <td class="rt_error">{{ form.sectionhead.errors }}</td>
+
+	    <td class="rt_label">dtCreated:</td>
+	    <td class="rt_field">{{ ix.dtCreated.astimezone().strftime( '%Y-%m-%d') }}</td>
+	    
+	    <td class="rt_error"></td>
+	</tr>
+	<tr>
+	    <td class="rt_label group">{{ form.start_folded.label_tag() }}</td>
+	    <td class="rt_field">{{ form.start_folded }}</td>
+	    <td class="rt_error">{{ form.start_folded.errors }}</td>
+
+	    <td class="rt_label">dtModified:</td>
+	    <td class="rt_field">{{ ix.dtModified.astimezone().strftime( '%Y-%m-%d') }}</td>
+	    <td class="rt_error"></td>
+	</tr>
+
+	<tr>
+	    <td class="rt_label grid">{{ form.gridItem.label_tag() }}</td>
+	    <td class="rt_field">{{ form.gridItem }}</td>
+	    <td class="rt_error">{{ form.gridItem.errors }}</td>
+	    
+
+	    <td class="rt_label">reminder:</td>
+	    <td class="rt_field"><input type="date" name="remind_date" id="remind_date" 
+					{% if ix.reminder_date != None %}
+					      value="{{ ix.reminder_date.isoformat() }}"
+					{% endif %}
+				 /> 
+
+	    </td>
+	    <td class="rt_error"></td>
+	</tr>
+
+	<tr>
+	    <td class="rt_label mark">{{ form.tagged_page.label_tag() }}</td>
+	    <td class="rt_field">{{ form.tagged_page }}</td>
+	    <td class="rt_error">{{ form.tagged_page.errors }}</td>
+
+	    <td class="rt_label jump">{{ form.jumplink.label_tag() }}</td>
+	    <td class="rt_field">{{ form.jumplink }}</td>
+	    <td class="rt_error">{{ form.jumplink.errors }}</td>
+	</tr>
+	<tr>
+
+	    <td class="rt_label mark">{{ form.shortlist_marker.label_tag() }}</td>
+	    <td class="rt_field">{{ form.shortlist_marker }}</td>
+	    <td class="rt_error">{{ form.shortlist_marker.errors }}</td>
+
+	    <td class="rt_label jump">{{ form.jumplabel.label_tag() }}</td>
+	    <td class="rt_field">{{ form.jumplabel }}</td>
+	    <td class="rt_error">{{ form.jumplabel.errors }}</td>
+
+	</tr>
+	<tr>
+	    <td class="rt_label mark">{{ form.meeting_master.label_tag() }}</td>
+	    <td class="rt_field">{{ form.meeting_master }}</td>
+	    <td class="rt_error">{{ form.meeting_master.errors }}</td>
+
+	    <td class="rt_label jump">{{ form.jumpcolor.label_tag() }}</td>
+	    <td class="rt_field">{{ form.jumpcolor }}</td>
+	    <td class="rt_error">{{ form.jumpcolor.errors }}</td>
+	    
+
+	</tr>
+
+	<tr>
+	    <td class="rt_label">{{ form.webpage_set.label_tag() }}</td>
+	    <td class="rt_field">{{ form.webpage_set }}</td>
+	    <td class="rt_error">{{ form.webpage_set.errors }}</td>
+	    
+	    <td class="rt_label">{{ form.adorn.label_tag() }} </td>
+	    <td class="rt_field remove_null_option">{{ form.adorn }}
+		<!-- illustrate the color key -->
+		<span class="example adorn_0">&nbsp;0&nbsp;</span>
+		<span class="example adorn_1">&nbsp;1&nbsp;</span>      
+		<span class="example adorn_2">&nbsp;2&nbsp;</span>
+		<span class="example adorn_3">&nbsp;3&nbsp;</span>
+		<span class="example adorn_4">&nbsp;4&nbsp;</span>
+		<span class="example adorn_5">&nbsp;5&nbsp;</span>
+	    </td>
+	    <td class="rt_error">{{ form.adorn.errors }}</td>
+	</tr>
+
+
+
+    </table>
+
+    {#
+    <tr>
+	<td class="rt_label grid">{{ form.grid_order.label_tag() }}</td>
+	<td class="rt_field">{{ form.grid_order }}</td>
+	<td class="rt_error">{{ form.grid_order.errors }}</td>
+    </tr>#}
+    
+
+
+    
+
+    {# ============ CKEDITOR TABLE ================ #}
+    
+    <table class="rt_table_wysiwyg">
+	<tr>
+	    <td class="rt_label">{{ form.noteText.label_tag() }}</td>
+	</tr>
+	<tr>
+	    {#<td colspan=2 class="rt_field">{{ form.noteText }} </td> #}
+	    <td colspan=2 class="rt_field" id="cknotetext">{{ form.noteText }} </td>
+	    <td class="rt_error">{{ form.noteText.errors }}</td>
+	</tr>
+
+
+<table class="rt_table_actions">
+	
+	<tr class="rt_submit lower">
+	    <td class="update_button_cell">
+		{#  submit w/windowsize (for mobile) #}
+		<input type="button"  value="Update"  onClick='set_windowsize_field();  $( "#edit_form" ).trigger( "submit" );' >     
+	    </td>
+
+	    <td class="cancel_link">
+		<span><a href="/relix/{{ ix.pmid }}/{{ request.session[uuid].fetch_root }}/cancel_edit/{{ uuid }}">cancel</a></span>
+	    </td>
+	    
+	</tr>
+    </table>
+    
+
+    {# ============ MOBILE EDITOR FIELD  ================================ #}
+    
+    <div id="mobile_input_wrapper">
+	<textarea name="mobile_input" id="mobile_input" >{% if ix.noteText == "" -%}<p></p>{% else %}{{ ix.noteText }}{% endif %}</textarea>
+    </div>
+
+
+    <input type="hidden" name="windowsize" value=0 />
+
+    
+
+    {# ============ IMAGE LIST ====================== #}
+
+    <table class="rt_table_image_list">
+	<tr>
+	    <td class="rt_label">{{ form.image_list.label_tag() }}</td>
+	</tr>
+	<tr>
+	    <td class="rt_field">{{ form.image_list }}</td>
+	    <td class="rt_error">{{ form.image_list.errors }}</td>
+	</tr>
+    </table>
+
+
+
+	    </form>
+
+	    {# ================ FORM END ================================================ #}
+
+	    
+	    {# ============ END EDITORS ====================== #}
+
+	    
+	    <br/><br/>
+	    {% if floater == 'yes' %}
+		<p>delete available on non-floating edit window</p>
+	    {% elif qnote == 'y' %}
+		<p>no record delete on qnote creation</p>
+	    {% else %}
+		<div class="delrel"><a href="/relix/{{ ix.pmid }}/deletenote/{{uuid}}" class="item_title_psd">delete note {{ ix.pmid }}</a></div>
+	    {% endif %}
+	    
+	    <!-- hack that removes the "--------" select option value which will not validate -->
+	    <script>
+	     removeNullOption();
+	    </script>
+	    
+	    <!-- if Qnote, place cursor in title; otherwise, place in text note -->
+	    {% if qnote == 'y' %}
+		<script>
+		 $("tr#title td.rt_field input#id_title").focus();
+		</script>
+		
+	    {% else %}
+		<!-- this does not work, b/c it's an iFrame and it has no focusable element -->
+		{#
+		<script>
+		$("body.cke_editable").focus();
+		</script>
+		#}
+	{% endif %}
+	
+
+{% endblock %}
+
+
+
+
+
+

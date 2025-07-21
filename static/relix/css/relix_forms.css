@@ -1,0 +1,35 @@
+/**** CSS to improve display for Relix forms *****/
+
+/**  kbi_form.html ***************************************************************/
+
+div#kbi_form_page form table#kbi_form_table {
+    margin: 10px;
+    padding: 10px;
+    border: 10px;
+    width: 800px;
+    background-color: #dddddd;
+    
+}
+
+div#kbi_form_page input#id_title {
+    width: 95%;
+}
+
+div#kbi_form_page textarea#id_noteText {
+    width: 95%;
+    height: 300px;
+}
+
+div#kbi_form_page input#action_button {
+    margin-left: 10px;
+}
+
+div#kbi_form_page p#delete {
+    margin-top: 30px;
+}
+
+/**************************************************************************/
+
+
+/**************************************************************************/
+

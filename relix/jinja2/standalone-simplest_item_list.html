@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+	<link rel="shortcut icon" href="{{ static('favicon.ico')}}"/>
+	
+	<link type="text/css" rel="stylesheet" href="/static/relix/css/main_style.css" media="Screen" />
+	<link type="text/css" rel="stylesheet" href="/static/relix/css/relix_forms.css" media="Screen" />
+	<!-- link type="text/css" rel="stylesheet" href="/static/relix/css/mobile_main.css" media="only screen and (max-device-width: 880px) and (min-device-width: 320px)" / -->
+	<link type="text/css" rel="stylesheet" href="/static/relix/css/print.css" media="print" />
+	
+	<!--script type="text/javascript" src="/static/relix/js/jquery-ui-1.8.16.custom/js/jquery-ui-1.8.16.custom.min.js"></script-->
+	<script type="text/javascript" src="/static/relix/js/jquery-1.7.min.js"></script>
+	<script type="text/javascript" src="/static/relix/js/simple_items.js"></script>
+	
+	{#% load static %#}
+	<script type="text/javascript" src="{{ static("ckeditor/ckeditor-init.js") }}" ></script>
+	<script type="text/javascript" src="{{ static("ckeditor/ckeditor/ckeditor.js") }}" ></script>
+	
+	
+	<title>{% block title %}{{ titleCrumbBlurb }} [ {{ request.user.username }} ]- SIMPLEST{% endblock %}</title>
+	
+    </head>
+    
+    <body>
+	<h2><a href="/relix_nm/">relix_nm home</a></h2>
+	<div id="mcontent">
+	    <!-- this is where the header "body" appears -->
+	    {#  % block content %}{% endblock % #} 
+	    {% if current_items %}
+		<h2>simplest</h2>
+		<table class="skinny">
+		    <tr><th>pmid</th><th>kids</th><th>title</th><th>last mod</th></tr>
+		    {% for ci in current_items %}
+
+			<tr >
+			    <td><a href="/relix_nm/{{ci.pmid}}/view/">{{ci.pmid}}</a></td>  
+			    <td>{{ci.count_of_descendants() }}</td>
+			    	{# div class="related" style=" padding-left:{{ ((ci.path_length/15)*250)|int }}px; padding-right:8px;" > #}
+			    <td style=" padding-left:{{ ((ci.path_length/15)*250)|int }}px;" >{{ci.title}}</td>
+			    <td class="skinny_date">  {{ ci.dtCreated.strftime( '%Y-%m-%d' ) }}</td>
+			</tr>			    
+		    {% endfor %}
+
+		</table>
+		
+	    {% else %}
+		<p>No items are available.</p>
+	    {% endif %}
+	    
+	    
+	    
+	</div>
+	    
+	
+	
+
+	
+    </body>
+</html>

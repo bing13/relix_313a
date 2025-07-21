@@ -1,0 +1,31 @@
+{% extends "j2_relix_base.html" %}
+{# RELIX3 -------------------------------------------------------------------- #}
+
+{# STASH DISPLAY  ------------------------------------------------------------- STASH DISPLAY #}
+{% block content %}
+    <h2>stash display</h2>
+
+     
+{# -- STASHDISPLAY PMID  ------------------------------------------------------------------------- -- -#}
+<form action="/relix/stashrecall/" method="post">
+    {{ csrf_input }}
+
+    <h3>PMID: {{pmid}} </h3>
+    <h4>Stashfile: {{stashfile}} </h4>
+          <p>Enter PMID: <input type="text" name="pmid" value="" class="new_shortie_input"></p>
+ </form>
+	
+<hr/>
+	
+<h3>Stashed record</h3>
+
+{% for s in scontents %}
+   {{ s|safe }}
+{% endfor %}
+
+
+
+<hr/>
+<p class="footertime">m2:{{todayx}}</p>
+{% endblock %}
+

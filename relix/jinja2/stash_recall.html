@@ -1,0 +1,53 @@
+{% extends "j2_relix_base.html" %}
+{# RELIX3 -------------------------------------------------------------------- #}
+
+{# STASH RECALL  ------------------------------------------------------------- STASH RECALL #}
+{% block content %}
+    <h2>stash recall</h2>
+
+     
+{# -- STASHRECALL PMID  ------------------------------------------------------------------------- -- -#}
+<form action="/relix/stashrecall/" method="post">
+
+    {{ csrf_input }}
+
+    <h3>Welcome, {{request.user.username}}. </h3>
+    
+    <h4>Enter the PMID.</h4>
+    <p>PMID: <input type="text" name="pmid" value="" class="new_shortie_input"></p>
+    <br/><br/>
+</form>
+
+{% if pmid != 0 %}
+	
+<hr/>
+<h3>Stashed records for PMID {{pmid}}</h3>
+	    
+    <table class="e_list psd_table item_table flat_list meetings">
+		
+	{# -- header row --------------------------------------------------- -- #}
+	<tr class="item_table_header">
+	    <th class="titlecol">pmid</th>
+	    <th>stamp date</th>
+	</tr>
+		
+	{# -- loop through the stashed itemsn --  #}
+	{% for sf in stashed_files %}
+	    <tr  class="items grid_group_list_item" >
+		<td>{{loop.index}}</td>
+		<td><a href="/relix/stashdisplay/{{pmid}}/{{sf}}/">{{sf}}</a></td>
+	    </tr>
+	{% endfor %}  {# -- main table loop ends -- #}
+
+
+    </table>
+    
+{% endif %}
+
+<hr/>
+<p></p>
+<p><a href="/relix/stashpurge/">Clear stash files older than 14 days</a></p>
+
+<p class="footertime">m2:{{todayx}}</p>
+{% endblock %}
+

@@ -1,0 +1,337 @@
+{% extends "j2_relix_base.html" %}
+{# RELIX3 -------------------------------------------------------------------- #}
+{#% load relix_custom_tags %}{% endcomment %#}
+{% block content %}
+    {% if current_items %}
+	{# -- BEGIN HEADER TABLE for ITEM TABLE ------------------------------------------------------------- -- #}
+	
+	<div class="info_line">
+	    {% if request.session[uuid].fetch_type == 'search' %}
+		<ul class="statusLine" id="search_status_line">
+		    {#<li class=term_line>#}
+		    {% for sd in request.session[uuid].search_decoded -%}
+			<li class="term_line">{{ sd|safe }}</li>
+		    {% endfor %}
+		    <li class="term_line"><strong>n</strong>: {{ current_items|length }}</li>
+		    <li class="term_line"><a href="/relix/reiterate/date_mod/{{ uuid }}">date&nbsp;sort</a>&nbsp;|&nbsp;<a href="/relix/reiterate/relev/{{ uuid }}">relevance&nbsp;sort</a></li>
+		    
+		</ul>
+	    {% elif request.session[uuid].fetch_type == 'today' %}
+		<ul class="statusLine" id="search_status_line">
+		    <li>TODAY work sets:  {{ today_workset_list|join(',') }}</li>
+		</ul>
+	    {% elif request.session[uuid].fetch_type not in ['recent','qlist','reminders','list_tagged_pages','shortview'] %}
+		<ul class="statusLine">
+		    <li>{{ state }}</li><li>{{request.session[uuid].fetch_root}} {{ request.session[uuid].fetch_type }}</li><li>n: {{ current_items|length }}</li><li> <a href="/relix/tree/{{request.session[uuid].fetch_root}}/10">tree view</a></li>
+	    {% elif request.session[uuid].fetch_type == 'list_tagged_pages' %}
+		    <ul class="statusLine">
+			<li>tagged pages view</li>
+		    </ul>
+	    {% elif request.session[uuid].fetch_type == 'qlist' %}
+		    <ul class="statusLine">
+			<li>qnote list</li>
+		    </ul>
+	    {% elif request.session[uuid].fetch_type == 'recent' %}
+		    <ul class="statusLine">
+			<li>recent view</li>
+		    </ul>
+	    {% elif request.session[uuid].fetch_type == 'reminders' %}
+		    <ul class="statusLine">
+			<li>reminders</li>
+		    </ul>
+
+	    {# --------------------- SHORT LIST FORM  ----------------------- #}
+	    {% elif request.session[uuid].fetch_type == 'shortview' %}
+
+		    <ul class="statusLine">
+			<li>shortlist view</li>
+			<li>n={{current_items|length}}</li>
+		    </ul>
+
+		</ul>  {# -- unmatched ul?? no, I think just inside info_line div --  #}
+		
+		<form  action="/relix/newshort/" method="post">
+		    {{ csrf_input }}
+
+		    <ul class="new_shortlist_item">
+			<li>New: 
+			    <select name="new_shortitem_parent_pmid" class="new_shortlist_item">
+    				{# -- option value="-99" selected="selected">no change</option -- #}
+				{% for jpmid, jtext in personal_jumplinks -%}
+				    <option value="{{jpmid}}" >{{jtext}}</option>
+				{% endfor %}
+			    </select>
+			</li>
+			<li><input type="text" name="new_shortitem_title" value="" class="new_shortie_input"></li>
+			<li>
+			    <select name="new_shortitem_priority" class="ps_select" >
+    				{# -- option value="-99" selected="selected">no change</option -- #}
+				{% for cid, ctext in PCHX -%}
+				    <option value="{{cid}}" {% if cid == "0" %} selected{% endif %}>{{ctext}}</option>
+				{% endfor %}
+			    </select>
+			</li>
+			<li>
+			    <input id="new_shortlist_submit" class="new_shortlist_button"  type="submit" value="create"/>
+			</li>
+		    </ul>
+		</form>
+	    {% endif %}
+	    {# ----------------- END SHORT LIST FORM ------------------  #}
+
+	    {#	    	    
+	    {% if request.session[uuid].searchFx == 'hotSearch' and request.session[uuid].fetch_type == 'search' %}
+		<li class="doLink"><a href="/relix/{{target_id}}/view/">return to full item list</a></li>
+	    {% elif request.session[uuid].fetch_type in ['recent','qlist','reminders','today', 'list_tagged_pages','shortview'] %}
+		&nbsp;  
+	    {% endif %}   
+		</ul>
+		#}
+		
+	</div>
+
+	{# ------------------------------------------------------------------------------- #}
+
+	{% if request.session[uuid].fetch_type =='shortview' %}
+	    
+	    <div class="info_line">
+		<div  class="shortview_jump_container">
+		    {% for j in short_jumps -%}<span {% if shortlist_jumpview == j.jumplabel %}class="bold_shortjump_link"{% endif %}><a href="/relix/shortlist/{{j.jumplabel}}">{{j.jumplabel}}</a></span>{% endfor %}
+		</div>
+	    </div>
+	{% endif %}
+	
+	{# -- BEGIN MAIN ITEM TABLE ------------------------------------------------------------- -- #}
+	<form action="/relix/itemsedit/" method="post">
+	    
+	    {{ csrf_input }}
+	    <input type="hidden" name="uuid" value={{ uuid }}>	    
+	    
+	    <table id="flat_table" class="e_list psd_table item_table flat_list">
+		{# -- upper submit button row --------------------------------------------------- -- #}
+		<tr>
+		    <td>{# ID #}</td>
+		    <td class="title_header_spacer" >{# title #}</td>
+		    {% if request.session[uuid].fetch_type == 'search' and request.session[uuid].searchFx != 'hotSearch' and request.session[uuid].searchFx != 'qpmid' %}
+			<td class="searchscore_header_spacer" >{# search score #}</td>
+		    {% elif  request.session[uuid].fetch_type in ['list_tagged_pages'] %}
+			<td class="workset_header_spacer" ></td>
+		    {% endif %}
+		    <td class="people_header_spacer"></td><td class="dates_header_spacer"></td>
+		    <td class="priority_header_spacer"></td>{#  <td class="status_header_spacer"></td> #}
+		    <td class="button_row_cell">
+			<input id="action_button_top" class="notes_button"  type="submit" value="&nbsp;&nbsp;&nbsp;go&nbsp;&nbsp;&nbsp;" />
+		    </td>
+		</tr>
+
+
+		
+		{# -- TH column headers ------------------------------------------------------------- -- #}
+		<tr class="item_table_header">
+		    <th>id</th>
+		    <th class="titlecol">title</th>
+		    {% if request.session[uuid].fetch_type == 'search' and request.session[uuid].searchFx != 'hotSearch' and request.session[uuid].searchFx != 'qpmid' %}
+			<th>search score</th>
+		    {% endif %}
+		    
+		    {% if request.session[uuid].fetch_type in ['list_tagged_pages'] %}
+			<th >work set</th>
+		    {% endif %}
+
+		    <th id="people_cell_column_label">ppl</th>
+		    <th id="dates_cell_column_label">dates</th>
+		    <th id="priority_cell_column_label">priority&nbsp;
+			{% if orig_of_hotSearch != -9 and is_hotSearch==True  %}<span class="noteplus"><a href="/relix/{{orig_of_hotSearch}}/view/">&oplus;</a></span>{% endif %}</th>
+		    <th id="status_cell_column_label">status</th>
+
+		</tr>
+
+		{# -- BEGIN MAIN LOOP ------------------------------------------------------------------- -- #}
+				{% for ci in current_items -%}
+				    <tr id = "{{ ci.pmid }}" class="items status_{{ci.status}} {% if ci.priority|int >= 1 and ci.priority|int <= 5 or ci.status|int == 1 or ci.status|int == 2 %} hot_item {% else %} not_hot {% endif %} archived_{{ ci.archived }} {% if ci.hasNote == True %} has_note {% endif %} adorn_{{ ci.adorn }}" >
+					{# -- ID and ITEM SELECT CELL -------------------------------------------------------- -- #}
+					{% if ci.jumplink == True -%}
+					    {% if ci.jumpcolor != None %}<td class="itemtd id_cell_psd" style="border-left:5px solid {{ci.jumpcolor}};">
+					    {% else %}<td class="itemtd id_cell_psd" style="border-left:5px solid #82828c;">{% endif %}
+					{% else %}
+						<td class="itemtd id_cell_psd" style="border-left:5px solid transparent;" >
+					{% endif %}
+					{# --  PMID, addNote ------------------- -- #}
+					<span class="hideo">&squf;</span><a href="/relix/{{ci.pmid}}/view/" class="item_title_linkout">{{ci.pmid}}</a>
+					<span class="item_select_widgets"><input type="checkbox" name="itemSelect"  value="{{ci.pmid}}" ><input type="radio" name="grab" value="{{ci.pmid}}"></span></td>
+						{# -- PAD/BULLET/TITLE sub-table ------XXX----------------------------------------------- -- -#}
+					<td class="itemtd" onClick="more_features( {{ci.pmid}} );Elist_item_widgets_toggle( {{ci.pmid}} );">
+					    {# -- SEARCH, RECENT OR TODAY .... FLAT LISTS TITLE  --------------------------------- FLAT  -- - #}
+					    <div class="item_content_block">
+						{# -- SEARCH, RECENT, REMINDERS, TODAY, TAGGED PAGES list the TITLE --------- -- -#}
+						{% if request.session[uuid].fetch_type in ['people_search','today','search','recent','qlist','shortview','list_tagged_pages','reminders'] -%}
+						    {% if request.session[uuid].searchFx != 'hotSearchXXXX'  -%}
+							{# -- show PARENTCRUMB for selected views ------------------------- -#}
+							<div class="parentCrumb"></div>
+						    {% endif %}
+						{% endif %}
+						{# -- end PARENT CRUMB -- #}
+						<div class="title_block">
+						    <ul>
+							<li class="item_title" >
+							    {% if ci.pmid in lock_file_list %}<span class="lock_file_image"></span>{% endif %}
+							    <span class="item_title"><a href="/relix/{{ci.pmid}}/edit/n/{{uuid}}" class="item_title_linkout">{{ ci.title|safe }}</a>{% if ci.webpage_set%}<span class="wopf">&wopf;{% endif %}</span></span>
+							    <span class="shownote_widget" {% if ci.hasNote == True -%} onClick='window.open("/relix/{{ci.pmid}}/shownote/{{uuid}}", "_blank","toolbar=no,scrollbars=yes,resizable=yes,width=600,height=600");' class="detail_noteplus item_title_linkout">&oplus;{% else %}>{% endif %}</span>
+							    <span id="af{{ci.pmid}}" class="ancestor_fetch" onClick="ancestor_fetch( {{ci.pmid}} );"> &uarr;</span>
+							</li>
+						    </ul>
+						    {# -- end bulletized title string for Search results, etc ---- -#}
+						</div>
+					    </div>
+					    {# -- end sub-table -------------------------------------------------- -- -#}
+					    {# -- related-to links ----------------------------------------------- -- -#}
+					    {% if ci.rel_content|length > 0 -%}
+						<div class="related_items_list">
+						    {% for rx in ci.rel_content -%}
+						
+							<div class="related{% if rx.status == '9' %} done{% endif %}" style="padding-left:8px; padding-right:8px;" >
+							    <a href="/relix/{{ci.pmid}}/rel_content/{{rx.pmid}}/changerel/{{ uuid }}">related to</a>:
+							    <a href="/relix/{{rx.pmid}}/view/">{{rx.pmid}}:{{rx.title}}</a>
+							    <span class="shownote_widget"
+								  {% if rx.hasNote == True -%} onClick='window.open("/relix/{{rx.pmid}}/shownote/{{uuid}}", "_blank","toolbar=no,scrollbars=yes,resizable=yes,width=600,height=600");' class="detail_noteplus item_title_linkout">&oplus;{% else %}>{% endif %}
+					    </span>
+							</div>
+						    {% endfor %}
+						</div>			  
+					    {% endif %}
+	</div>
+	{# -- --------END TITLE_BLOCK ---------- -- #}
+	{# - BEGIN ITEM DETAIL and PEOPLE BLOCKS ---------------------------------------------------------------- -#}
+	<div class="item_details_block"   id="detail_pane{{ci.pmid}}" >
+	    <ul class="item_detail_widgets" id="mf{{ci.pmid}}" ></ul>
+	</div>
+
+	<div class="item_details_block"  id="people_pane{{ci.pmid}}" >
+	    <ul class="item_people_assigned" id="ap{{ci.pmid}}" ></ul >
+	    <ul class="item_people_involved" id="ip{{ci.pmid}}" ></ul >				
+	    {# was ul class="item_people_widget #}
+	</div>
+
+	
+	{# - END ITEM DETAIL and PEOPLE BLOCKS ---------------------------------------------------------------------------- -#}
+	
+	
+					</td>
+					
+					{# -- END OF MAIN ITEM TD CELL ------------------------------------------------------------------------------------------ -- -#}
+					{% if request.session[uuid].fetch_type == 'search' and request.session[uuid].searchFx != 'hotSearch' and request.session[uuid].searchFx != 'qpmid' -%}
+					    <td>
+						<div class="score_and_cross">
+						    <span class="esscore">
+							{# date sort may not return a search score at all #}
+							{% if esScoreDict[ci.pmid] != None %}{{ esScoreDict[ci.pmid]|round(2) }}{% else %}{% endif %}</span>
+ 						</div>
+					    </td>
+					{% endif %}
+					{# -- work_set cell ------------------------------------------------------ #}
+
+					{% if request.session[uuid].fetch_type in ['list_tagged_pages'] %}
+					    <td class="itemtd work_set" >{{ci.get_workset_name()}}</td>
+					{% endif %}
+					
+
+					{# - PEOPLE CELL ---------------------------------------------------- #}
+					<td class="itemtd people" id="item_people{{ci.pmid}}" onClick="assign_people( {{ci.pmid}} );"    >
+					    {% for ax in ci.assigned_to.all() -%}
+						<span class="assigned_to">{{ax.nickname}}</span>
+					    {% endfor %}
+					    <br/>
+					    {% for ix in ci.involves.all() -%}
+						<span class="involves">{{ ix.nickname }}</span>
+					    {% endfor %}
+			    
+			</td>
+
+			{# -- date cell ------------------------------------------------------ -- -#}
+			<td class="itemtd dates">{% if  request.session[uuid].fetch_type in ['qlist','recent'] and ci.dtAccessed != None -%}
+			    <span class="accessed_date">{{ ci.dtAccessed.astimezone().strftime( '%Y-%m-%d' ) }}</span><br/>
+			{% endif %}
+			{{ ci.dtCreated.astimezone().strftime( '%Y-%m-%d' ) }}<br/>
+			{{ ci.dtModified.astimezone().strftime( '%Y-%m-%d'  ) }}
+			{% if  ci.reminder_date != None -%}
+			    <span class="reminder_date  {% if ci.reminder_date < todaydate %} late {% endif %}     ">{{ ci.reminder_date }}</span><br/>
+			{% endif %}
+
+
+			</td>
+			{# -- ----------- PRIORITY AND STATUS --------------------------------------------- -- -#}
+			{# -- was: ci.get_priority_display -- -#}
+			<td class="itemtd priority" >
+			    <select name="priority_j" class="ps_select priority_{{ci.priority}}"  onchange="priority_status_update(this)">
+    				{# -- option value="-99" selected="selected">no change</option -- #}
+				{% for cid, ctext in PCHX -%}
+				    <option value="{{cid}}" {% if cid == ci.priority %} selected{% endif %}>{{ctext}}</option>
+				{% endfor %}
+			    </select>
+			    <span class="printonly priority">{{ci.priority_chx}}</span>
+			</td>
+			
+			<td class="itemtd status">
+			    <select name="status_j" class="ps_select" onchange="priority_status_update(this)">
+    				{# -- option value="-99" selected="selected">no change</option -- #}
+				{% for cid, ctext in SCHX -%}
+				    <option value="{{cid}}" {% if cid == ci.status %} selected{% endif %}>{{ctext}}</option>
+				{% endfor %}
+			    </select>
+			    <span class="printonly status">{{ci.status_chx}}</span>
+			</td>
+			{# -- ----------- NOTE CELL ---used to be here------- -- #}
+		    </tr>
+		    
+		{% endfor %}  {# -- main table loop ends -- #}
+		
+		{# -- lowersubmit button row --------------------------------------------------- -- #}
+		<tr>
+		    {% if request.session[uuid].fetch_type == 'search' and request.session[uuid].searchFx != 'hotSearch' and request.session[uuid].searchFx != 'qpmid' %}
+			<td>{# ID #}</td>
+			<td class="title_header_spacer" >{# title #}</td>
+			<td class="searchscore_header_spacer" >{# search score #}</td>
+		    {% else %}
+			<td>{# ID #}</td>
+			<td class="title_header_spacer" >{# title #}</td>
+		    {% endif %}
+		    <td class="people_header_spacer"></td><td class="dates_header_spacer"></td>
+		    <td class="priority_header_spacer"></td>{#  <td class="status_header_spacer"></td> #}
+		    <td class="button_row_cell">
+			<input id="action_button_top" class="notes_button"  type="submit" value="&nbsp;&nbsp;&nbsp;go&nbsp;&nbsp;&nbsp;" />
+		    </td>
+		</tr>
+
+
+	    </table>
+	    {# -- END MAIN TABLE  ------------------------------------------------------------------------- -- -#}
+
+	    {# -- CHANGE ITEMS BLOCK (items_edit) ----------------------------------------------------------------- -- -#}
+
+	    <div class="submit_lower">
+		<span>
+			move&nbsp;to&nbsp;pmid:&nbsp;<input type="text" id="pmid_manual" name="pmid_manual" value="">
+		</span>
+		<span>
+		    change priority:
+		    <select id="priority_change" name="priority_change">
+    			<option value="-99" selected="selected">no change</option>
+			{% for cid, ctext in PCHX -%}
+  			    <option value="{{cid}}" >{{ctext}}</option>
+			{% endfor %}
+		    </select>
+		</span>
+		<span>change&nbsp;status:&nbsp;<select id="status_change" name="status_change"><option value="-99" selected="selected">no change</option>{% for cid, ctext in SCHX -%}<option value="{{cid}}" >{{ctext}}</option>{% endfor %}</select></span>
+	    </div>
+	    
+	</form>
+    {% else %}
+	<p>No items are available. Are they archived?</p>
+    {% endif %}
+ 
+    <div  class="footertime">
+	<div>{{todayx}}</div>
+	<div>uuid:{{uuid}}</div>
+    </div>
+{% endblock %}
+

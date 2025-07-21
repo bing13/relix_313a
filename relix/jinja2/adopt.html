@@ -1,0 +1,51 @@
+{% extends "j2_relix_base.html" %}
+{% block content %}
+
+    <h2>adopt child item</h2>
+
+    <input type="hidden" name="uuid" value={{ uuid }}>	    
+
+    
+    <h3>{{ parent_node.pmid}}: {{ parent_node.title }}</h3>
+    <p>go to:<a href="/relix/{{parent_node.pmid}}/view/">{{parent_node.pmid}}</a>
+	{% if request.session[uuid].fetch_root > 0 %}
+	    | <a href="/relix/{{request.session[uuid].fetch_root}}/view/">{{request.session[uuid].fetch_root}} (fetch_root)</a>
+	{% endif %}
+    </p>
+    <table class="psd_table  detail_table" id="rel_form" >
+	<tr class="items chgrel_item_sel_banner">
+	    <td colspan="2">adopt child</td>
+	</tr>
+
+	<tr class="items">
+	    <td class="detail_label">adopt child</td>
+	    <td><h4>tagged pages</h4>
+		<table id="adoptionTable">
+		    <tr><th>action</th><th>child ID</th><th>title</th><th>archived</th></tr>
+		    {% for pm in tagged_pages %}
+			<tr>
+			    <td>
+				<a href="/relix/{{pm.pmid}}/{{parent_node.pmid}}/movetagged/{{ uuid }}">adopt</a>
+			    </td>
+			    <td>{{ pm.pmid }}</td>
+			    <td>{{ pm.title }}</td>
+			    <td>
+				{% if pm.archived %}<b>{{ pm.archived }}</b>{% endif %}
+			    </td>			    
+			</tr>
+		    {% endfor %}	  
+
+		</table>
+	    </td>
+	</tr>
+    </table>
+
+    <p class="footertime">uuid:{{uuid}}</p>
+
+{% endblock %}
+
+
+
+
+
+

@@ -1,0 +1,46 @@
+{% extends "j2_relix_base.html" %}
+{% block content %}
+
+{#  LOCK FILE LIST  #}
+
+<input type="hidden" name="uuid" value={{ uuid }}>
+
+{% if  lock_files|length > 0 %}
+
+
+<!-- BEGIN MAIN ITEM TABLE ------------------------------------------------------------- -->
+
+<table class="psd_table item_table">
+  <!-- header row --------------------------------------------------- -->
+    <tr class="item_table_header">
+      <th>File</th><th>PMID</th><th>title</th><th>Time (US/Pacific)</th><th>Remove</th>      
+    </tr>
+    
+<!-- BEGIN MAIN LOOP ------------------------------------------------------------------- -->
+{% for lfile in lock_files %}
+
+    <tr  class="items lockrow" >
+      <td>{{lfile.0}}</td>
+      <td><a href="/relix/{{lfile.1}}/view/">{{lfile.1}}</a></td>
+      <td><a href="/relix/{{lfile.1}}/view/">{{lfile.2}}</a></td>      
+      <td>{{lfile.3}}</td>
+      
+      <td>[<a href="/relix/{{ lfile.0 }}/break_lock/">break lock</a>]</td>
+      {#  <td>[ /relix/{{ lfile.0 }}/break_lock/ ]</td>  #}
+    </tr>
+    
+{% endfor %}
+</table>
+
+
+{% else %}
+    <h3>--- NO LOCK FILES ---</h3>
+
+{% endif %}
+
+
+
+
+    
+{% endblock %}
+

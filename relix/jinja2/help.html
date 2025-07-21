@@ -1,0 +1,134 @@
+{% extends "j2_relix_base.html" %}
+{% block content %}
+
+    <h1 class="homeTitle">relix help</h1>
+
+    <dl>
+	<dt>split note</dt>
+	<dd>
+	    <ul>
+		<li>mark split with "@@" in column 1. </li>
+		<li>Whatever comes after the @@ is the title of the new note. Everything until the next @@ is the body of the note.</li>
+	    </ul>
+	</dd>
+	<dt>search tips</dt>
+	<dd>
+	    <ul>
+		<li>PMID search field <i>fetches</i> the matching item, plus its children</li>
+		<li>Quick search field searches title + text note. </li>
+		<li>If a number is entered in Quick search field, it <i>searches</i> for a PMID. </li>
+		 <li> If a series of numbers separated by commas is entered, it searches for any matching PMIDs. </li>
+	    </ul>
+	</dd>
+    </dl>
+
+    <hr/>
+
+    <h3>stat summary</h3>
+    <blockquote>
+	<table class="stat_table">
+	    <tr><td>total nodes</td><td class="number_cell"> {{results.allNodes}}</td></tr>
+	    <tr><td>archived nodes</td><td class="number_cell"> {{results.archived}}</td></tr>
+	    <tr><td colspan=2>Created_by totals</td></tr>
+	    {% for p,q in results.person_totals.items() %}
+		<tr><td class="label_cell">{{p}}</td><td class="number_cell">{{q}}</td></tr>
+	    {% endfor %}
+	</table>  
+    </blockquote>
+
+    <hr/>
+
+    <h3>multiple parents</h3>
+    <blockquote>
+	{% if results.multiparents|length == 0 %}
+	    <p>No items with multiple parents.</p>
+	{% else %}
+	    <table class="stat_table">
+		{% for x, datax in results.multiparents.items() %}
+		    <tr>
+			<td colspan=4>Parents of {{x}}</td>
+		    </tr>
+		    <tr>
+			<td></td>
+			<td>parent PMID</td>
+			<td>owner</td>
+			<td>title</td>
+		    </tr>
+		    
+		    {% for z in datax %}
+			<tr>
+			    <td></td>
+			    <td> {{z.0}} </td>
+			    <td> {{z.1}} </td>
+			    <td> {{z.2}} </td>
+			</tr> 
+		    {% endfor %}
+		{% endfor %}
+	    </table>
+	    <p>Try <code>somechildnode.child_of.disconnect(badparentnode)</code></p>
+	{% endif %}
+    </blockquote>
+    <hr/>
+    {# workset issues ---------------------------------------------- #}
+
+    <h3>workset issues</h3>
+    <h4>workset nodes with blank names</h4>
+    {% if wsbn == None %}
+	<ul><li>No workset nodes with blank names.</li></ul>
+    {% else %}
+	<ol>
+	    <li>{{wsbn.id}}, {{wsbn.name}}, {{wsbn.created_by}}</li>
+	</ol>
+	{% if notes_attached_to_wsbn|length == 0 %}
+	    <ul><li>No notes are attached to the blank workset node.</li></ul>
+	{% else %}
+	    <h4>Notes that belong to a blank workset</h4>
+	    <ol>
+		{% for nab in notes_attached_to_wsbn %}
+		    <li>{{nab.pmid}}, {{nab.title}}, {{nab.created_by}}</li>
+		{% endfor %}
+	    </ol>
+	{% endif %}
+
+    {% endif %}
+    <h4>active notes without a workset ({{ no_ws|length }})</h4>
+    <div class="relix_minor_note">Notes.nodes.has(ws_belongs=False).filter(archived=False,pmid__ne=0)</div>
+
+    {% if no_ws|length == 0 %}
+	<ul><li>No active notes are missing a workset.</li></ul>
+    {% else %}
+	<ol>
+	    {% for nw in no_ws %}
+		<li>{{nw.pmid}}, {{nw.title}}, {{nw.created_by}}<br/>
+		    {% for pz in nw.parents_any_owner() %}
+			{# can be multiple parents, with multiple worksets #}
+			&nbsp;&nbsp;&nbsp;&nbsp; parent:{{pz.pmid}},{{ pz.title}},{{pz.created_by}}<br/>
+		    {% endfor %}
+		</li>
+	    {% endfor %}
+	</ol>
+    {% endif %}
+    <hr/>
+    {#  --------------------------------------------------------------------------- #}
+    <h3>session variables</h3>
+
+    <div class="relix_minor_note">clear expired sessions with: $ python manage.py clearsessions</div>
+    <div class="relix_minor_note">{{ request.session.keys()|length }} session variables</div>
+
+
+    <table class="session_vars">
+	{% for x,y in request.session.items() %}
+	    {% if x != "jumplist" %}
+		<tr>
+		    <td class="relix_minor_note">{{x}}</td><td class="relix_minor_note">{{y}}
+			{% if x == 'fetchRoot' %} type = {{ fetch_root_type }} {% endif %}
+		</td>
+	    </tr>
+	{% endif %}
+{% endfor %}
+</table>
+
+
+{% endblock %}
+ 
+

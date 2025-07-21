@@ -1,0 +1,46 @@
+{% extends "j2_relix_base.html" %}
+{% block content %}
+
+    <input type="hidden" name="uuid" value={{ uuid }}>
+    
+    {% if current_items %}
+	<h2>{{current_items[0].pmid}} tree</h2>
+
+	<table class="e_list psd_table item_table" id="kidtree">
+	    <tr><th>pmid | title | last mod</th></tr>
+	    {% for ci in current_items %}
+
+		<tr class="kid_row1 items"> 
+
+		    <td class="title">
+			<hr/>
+			<dl class="kidnote">
+			    <dt>
+				<a href="/relix/{{ci.pmid}}/view/">{{ci.pmid}}</a> {{ ci.path_length|safe }}{{ci.title}}
+
+			    </dt>
+			    <dd>
+				{{esNoteDict[ci.pmid]|safe}}
+			    </dd>
+			</dl>
+			<div class="kidtree_date">({{ci.dtModified.strftime( '%Y-%m-%d' ) }})</div>
+
+		    </td>
+
+		    
+		</tr>
+	    {% endfor %}
+
+	</table>
+	
+    {% else %}
+	<p>No items are available.</p>
+    {% endif %}
+
+
+    <p class="footertime">f2:{{todayx}}</p>
+    <p class="footertime">uuid:{{uuid}}</p>
+
+    
+{% endblock %}
+ 

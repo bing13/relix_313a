@@ -1,0 +1,137 @@
+{% extends "j2_relix_base.html" %}
+{# RELIX3 -------------------------------------------------------------------- #}
+
+{# MEETINGS -------------------------------------------------------------MEETINGS #}
+{% block content %}
+    {% if current_items %}
+	<form action="/relix/itemsedit/" method="post">
+	    {{ csrf_input }}
+	    {# -- BEGIN HEADER TABLE for ITEM TABLE ------------------------------------------------------------- -- #}
+	    <div class="info_line">
+		<input id="action_button_top" class="notes_button"  type="submit" value="&nbsp;&nbsp;&nbsp;go&nbsp;&nbsp;&nbsp;" />
+		<ul class="statusLine">
+		    <li>{{ request.session[uuid].fetch_type }}</li>
+		    <li>n: {{ current_items|length }}</li>
+		</ul>		      
+	    </div>
+
+
+	    {# -- BEGIN MAIN ITEM TABLE ------------------------------------------------------------- -- #}
+	    
+	    <table class="e_list psd_table item_table flat_list meetings">
+		
+		{# -- header row --------------------------------------------------- -- #}
+		<tr class="item_table_header">
+		    <th>id</th>
+		    <th class="titlecol">title</th>
+		    <th>add</th>
+		</tr>
+
+		{# -- BEGIN MAIN LOOP ------------------------------------------------------------------- -- #}
+		{# https://jinja2docs.readthedocs.io/en/stable/templates.html#groupby  #}
+		{#% for ci in current_items -%#}
+		{% for workgroup in current_items|groupby('work_set') %}
+		    <tr><td class="meeting_workset_grouper" colspan="4">{{workgroup.grouper}}</td></tr>
+		    {% for ci in workgroup.list %}
+		    
+		    
+		    <tr id = "{{ ci.pmid }}" class="items status_{{ci.status}} workset_{{ci.work_set}} {% if ci.priority|int >= 1 and ci.priority|int <= 5 or ci.status|int == 1 or ci.status|int == 2 %} hot_item {% else %} not_hot {% endif %} archived_{{ ci.archived }} {% if ci.hasNote == True %} has_note {% endif %} adorn_{{ ci.adorn }}" >
+			{# -- ID and ITEM SELECT CELL -------------------------------------------------------- -- #}
+			{% if ci.jumplink == True -%}
+			    {% if ci.jumpcolor != None %}<td class="itemtd id_cell_psd" style="border-left:5px solid {{ci.jumpcolor}};">
+			    {% else %}<td class="itemtd id_cell_psd" style="border-left:5px solid #82828c;">{% endif %}
+			{% else %}
+				<td class="itemtd id_cell_psd" style="border-left:5px solid transparent;" >
+			{% endif %}
+			{# --  PMID, addNote ------------------- -- #}
+			<span class="hideo">&squf;</span><a href="/relix/{{ci.pmid}}/view/" class="item_title_linkout">{{ci.pmid}}</a>
+			<span class="item_select_widgets"><input type="checkbox" name="itemSelect" id="itemSelect" value="{{ci.pmid}}" ><input type="radio" name="grab" id="grab" value="{{ci.pmid}}"></span></td>
+				{# -- PAD/BULLET/TITLE sub-table ----------------------------------------------------- -- -#}
+			<td class="itemtd" onClick="Elist_item_widgets_toggle( {{ci.pmid}} );">
+			    {# -- MEETINGS.... FLAT LISTS TITLE  --------------------------------- FLAT  -- -#}
+			    <div class="item_content_block">
+				{# -- show PARENTCRUMB for selected views ------------------------- -#}
+				<div class="parentCrumb"></div>
+				{# -- end PARENT CRUMB -- #}
+				<div class="title_block">
+				    <ul>
+					<li class="item_title" >
+					    {% if ci.pmid in lock_file_list %}<span class="lock_file_image"></span>{% endif %}
+					    <span class="item_title"><a href="/relix/{{ci.pmid}}/edit/n/{{uuid}}" class="item_title_linkout">{{ ci.title|safe }}</a></span>
+					    <span class="shownote_widget" {% if ci.hasNote == True -%} onClick='window.open("/relix/{{ci.pmid}}/shownote/{{uuid}}", "_blank","toolbar=no,scrollbars=yes,resizable=yes,width=600,height=600");' class="detail_noteplus item_title_linkout">&oplus;{% else %}>{% endif %}</span>
+					    <span id="af{{ci.pmid}}" class="ancestor_fetch" onClick="ancestor_fetch( {{ci.pmid}} );"> &uarr;</span>
+					</li>
+				    </ul>
+				    {# -- end bulletized title string for Search results, etc ---- -#}
+				</div>
+			    </div>
+			    {# -- end sub-table -------------------------------------------------- -- -#}
+			    {# -- related-to links ----------------------------------------------- -- -#}
+			    {% if ci.rel_content|length > 0 -%}
+				<div class="related_items_list">
+				    {% for rx in ci.rel_content -%}
+					<div class="related" style=" padding-left:8px; padding-right:8px;" ><a href="/relix/{{ci.pmid}}/rel_content/{{rx.pmid}}/changerel/{{ return_me_to }}/">related to</a>:<a href="/relix/{{rx.pmid}}/view/">{{rx.pmid}}:{{rx.title}}</a></div>
+				    {% endfor %}
+				</div>			  
+			    {% endif %}
+	    </div>
+	    {# -- --------END TITLE_BLOCK ---------- -- #}
+	    {# -- BEGIN ITEM DETAIL BLOCK --------------------------------------------------------------------------- #}
+	    <div class="item_details_block">
+		<ul class="item_detail_widgets">
+		    <li  onClick="tagged_page_toggle( {{ci.pmid}} );" id="tp{{ci.pmid}}" {% if ci.tagged_page == True %} class="tagged_page tp_hilite live_link" {% else %} class="tagged_page live_link" {% endif %} >&starf;</li>
+		    <li class="live_link activate_item_select" onClick="Elist_item_select_widgets_toggle();">&ocir;</li>
+		    <li  onClick="shortlist_toggle( {{ci.pmid}} );" id="sl{{ci.pmid}}" {% if ci.pmid in shortlist_ids %} class="shortlist sl_hilite live_link" {% else %} class="shortlist live_link" {% endif %} >&oS;</li>			  
+		    
+		    <li class="live_link" onClick="var $pmid =$(this).closest('tr').attr('id'); 
+			   var $return_me_to = $('input[name=return_me_to]').val();
+			   window.open('/relix/' + $pmid + '/qnote/{{uuid}}','_blank','width=900,height=1000,top=80,left=60');">&nearr;
+		    </li>
+		    {% if ci.pending_move %}<li class="static_text">&cross;</li> {% endif %}
+		    <li><a href="/relix/{{ci.pmid}}/addnote/{{uuid}}/" class="add-plus">new child</a></li>
+		    <li>
+			<a href="/relix/adopt_item/{{ci.pmid}}">adopt child</a> 					    
+		    </li>
+		    {% with px=ci.child_of.single() %}
+			{% if px == None %}
+			    <li><a href="/relix/{{ ci.pmid }}/myroot/0/changerel/{{ return_me_to }}/">add parent</a></li>
+			{% else %}
+			    <li>
+				<a href="/relix/{{ci.pmid}}/child_of/{{px.pmid}}/changerel/{{ return_me_to }}/">move</a>
+			    </li>
+			{% endif %}
+		    {% endwith %}
+		    {% if ci.rel_content|length == 0 %}
+			<li><a href="/relix/{{ci.pmid}}/rel_content/0/changerel/{{ return_me_to }}/"  >add rel.</a></li>
+		    {% endif %}
+		    <li><a href="/relix/{{ci.pmid}}/{{ return_me_to }}/">simple</a></li>
+		    <li><a href="/relix/{{ci.pmid}}/splitnote/">split</a></li>			  
+		    <li class="static_text">{{ci.work_set}}</li>
+		    <li class="static_text">{{ci.topSort}}</li>
+		</ul>
+	    </div> {# -- end item_details -- -#}
+	    {# -- END ITEM DETAIL BLOCK ------------------------------------------------------------------------------ -#}	      
+			</td>
+			
+			{# -- END OF MAIN ITEM TD CELL ------------------------------------------------------------------------------------------ -- -#}
+			
+			{# -- new meeting TD cell #}
+			<td class="itemtd meeting_add">
+			    <a href="#" class="add_meeting_widget" onClick='window.open("/relix/{{ci.pmid}}/add_meeting/{{uuid}}", "_blank","width=900,height=1000,top=80,left=60");return false;'>add meeting</a>
+			</td>
+			{# -- ----------- ----------------------------------------------------------- -- #}
+		    </tr>
+
+		 {% endfor %} {# -- grouper ends --  #}
+		{% endfor %}  {# -- main table loop ends -- #}
+	    </table>
+	    {# -- END MAIN TABLE  ------------------------------------------------------------------------- -- -#}
+	    
+	    
+	</form>
+    {% else %}
+	<p>No items are available. Are they archived?</p>
+    {% endif %}
+    <p class="footertime">m2:{{todayx}}</p>
+{% endblock %}
+

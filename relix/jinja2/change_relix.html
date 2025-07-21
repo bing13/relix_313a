@@ -1,0 +1,101 @@
+{% extends "j2_relix_base.html" %}
+{% block content %}
+
+    <h2>{{ ix.pmid }} {{ ix.title }}</h2>
+    <h4>{{origRelType}}</h4>
+
+<p class="rt_goto">go to:<a href="/relix/{{ix.pmid}}/view/">{{ix.pmid}}</a>
+  {% if request.session[uuid].fetch_root > 0 %}
+ | <a href="/relix/{{request.session[uuid].fetch_root}}/view/">{{request.session[uuid].fetch_root}} (fetch_root)</a>
+  {% endif %}
+</p>
+
+<form action="/relix/{{ix.pmid}}/{{origRelType}}/{{origLinkToID}}/changerel/{{ uuid }}" method="post">
+    {{ csrf_input }}
+    {#<input type="hidden" name="return_me_to" value={{ return_me_to }}>#}
+
+    <input type="hidden" name="origLinkToID" value="{{origLinkToID}}">
+    <input type="hidden" name="origRelType" value="{{origRelType}}">
+    <input type="hidden" name="mode" value="{{ mode }}" >
+    <input type="hidden" id="relType" name="relType" value="{{origRelType}}">
+
+<table class="psd_table  detail_table" id="rel_form" >
+  <tr class="items" > <td class="detail_label"><b>Editing item</b></td><td>{{ ix.pmid}}:
+      {{ ix.title }}
+
+    </td>
+  </tr>
+
+</tr>
+
+  <tr class="items">
+    <td class="detail_label">orig linked item</td>
+    <td>{{origLinkToID}}: {{origRelType}}: {{origLinkToTitle}}</td>
+  </tr>
+
+<tr class="items reltype" > <td class="detail_label">relationship type</td>
+    <td>{{origRelType}}</td>
+  </tr>
+
+
+<tr class="items chgrel_item_sel_banner">
+  <td colspan="2">
+    {% if mode == 'replace' %}new parent
+    {% else %} create relationship to
+    {% endif %}
+    
+  </td>
+</tr>
+
+  <tr class="items relpickx" >
+    <td class="detail_label">select tagged page</td>
+    <td> 
+      <select name="selectedLinkTo">
+        <option value="0" >---none---</option>
+        {% for ci in current_items %}
+        {% if ci.pmid != ix.pmid %}
+        <option value="{{ ci.pmid }}" {% if origLinkToID == ci.pmid %} selected="selected" {% endif %} >
+	  {{ ci.title|truncate(100,True)}} ({{ci.pmid}}) </option>
+	 
+          {% endif %}
+        {% endfor %}
+      </select>
+    </td>
+  </tr>
+
+  <tr class="items relpickx">
+    <td class="detail_label">or by PMID</td>
+    <td><input type="text" name="pmidLinkTo" value=""></td>
+  </tr>
+
+</table>
+
+<table>
+    <tbody><tr class="rt_submit upper">
+	<td class="cancel_link">
+	</td>
+	
+	<td>
+	    <input id="action_button_top" class="notes_button" type="submit" value="Save">
+	</td>
+    </tr>
+    
+    </tbody></table>
+
+</form>
+
+{#
+    url(r'^(?P<target_id>[0-9]+)/(?P<relatedID>[0-9]+)/(?P<relType>[a-z_\-]+)/deleterel/(?P<return_target>[\-0-9]+)/$', views.deleteRel, name='delete-rel')
+#}
+
+ <div class="delrel"><a href ="/relix/{{ix.pmid}}/{{origLinkToID}}/{{origRelType}}/deleterel/{{uuid}}/">delete this relationship</a></div>
+
+
+
+{% endblock %}
+
+
+
+
+
+

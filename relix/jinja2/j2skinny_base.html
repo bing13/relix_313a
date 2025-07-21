@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<link type="text/css" rel="stylesheet" href="/static/relix/css/main_style.css" media="Screen" />
+	<link type="text/css" rel="stylesheet" href="/static/relix/css/relix_forms.css" media="Screen" />
+	<link type="text/css" rel="stylesheet" href="/static/relix/css/print.css" media="print" />
+	
+	<script type="text/javascript" src="/static/relix/js/jquery-3.5.1.min.js"></script>
+	<script type="text/javascript" src="/static/relix/js/simple_items.js"></script>
+	
+	<title>{% block title %}{{ titleCrumbBlurb }} [ {{ request.user.username }} ]- Relix{% endblock %}</title>
+	
+	<style>
+	 .jumper
+	 {
+	     border-left: 4px solid {{jumpcolor}};
+	     padding-left: 25px;
+	 }
+	</style>
+	
+    </head>
+
+    <body class="background-dropx" >
+	<div name="note_body_container"  class="jumper">
+
+	    <div id="headerx">
+		{% block headerx %}
+		    <div class="hxtitle"><a href="/relix">relix:j:</a></div>
+
+		    <div id="pagecrumb">{{ titleCrumbBlurb }}</div>
+
+		{% endblock %}
+	    </div> <!-- closes headerx -->
+
+	    <div id="mainContainer">
+
+		<div id="sidebar">
+
+		    {% block sidebar %}
+			<span class="user_data">{{ request.user.username }} ({{ request.user.first_name }} {{ request.user.last_name }})</span>
+			
+		    {% endblock %}
+		</div>
+		<div id="messageLine">
+		    {% if error_message %}{{ error_message }} {% endif %}
+		    {% if request.session.messages %}{% for mx in request.session.messages|slice(3)|list|last %}{{ mx }}&nbsp;{% endfor %}
+		    {% endif %}
+		</div>
+
+		<div id="mcontent">
+		    <!-- this is where the header "body" appears -->
+		    {% block content %}{% endblock %}
+		</div>
+	    </div>
+		
+		<p class="mobile_blurb">mobile view</p>
+	    </div>
+    </body>
+</html>

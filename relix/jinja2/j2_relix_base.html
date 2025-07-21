@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+	
+	<link rel="shortcut icon" href="/static/favicon.ico" />
+	<link type="text/css" rel="stylesheet" href="/static/relix/css/main_style.css" media="screen"  />
+	<link type="text/css" rel="stylesheet" href="/static/relix/css/main_style.css" media="screen and (min-width:701px)"  />
+	<link type="text/css" rel="stylesheet" href="/static/relix/css/mobile_overrides.css" media="screen and (max-width:700px)" />
+	<link type="text/css" rel="stylesheet" href="/static/relix/css/print.css" media="print" /> 
+	
+	<script src="/static/relix/js/jquery-3.5.1.min.js"></script>
+	<script src="/static/relix/js/simple_items.js"></script> 
+	
+	<title>{% block title %}{{ titleCrumbBlurb }} - RELIX{% endblock %}</title>
+    </head>
+
+
+   
+    {% if uuid is defined and request.session[uuid] is defined %}
+	<body class="background-dropx  {% if "Edit:" in titleCrumbBlurb %}edit_view{% endif %}"
+	      onLoad="onLoadExecuted = false;showWorkset(
+		     {% if request.session[uuid].display_workset is defined -%}
+		     {% if request.session[uuid].display_workset != None -%}
+		     '{{ request.session[uuid].display_workset }}','{{ uuid }}'
+		     {% else %}'None','{{uuid}}'
+		     {% endif %}
+		     {% endif %}	 );onLoadExecuted = true"
+	>
+	{% else %}
+		<body class="background-dropx no_uuid_passed_to_j2_relix_base">
+	{% endif %}
+	<div id="headerx">
+	    {% block headerx %}
+		{% if request.user.username != '' -%}
+		    {# -------------------------------------------------- #}
+		    <div class="hxtitle"><a href="/relix/">relix:j:{{ titleCrumbBlurb }}</a></div>
+		    {% if umessage|length != 0 %}
+			<script>alert('{{ umessage|e }}'); {# was |escapejs #}</script>
+		    {% endif %}
+		    <div class="ssearch">
+			<form action="/relix/search/" method="post">
+			    {{ csrf_input }}
+			    <input type="text" name="searchFx" id="searchFx" />
+			    <input type="submit" value="search" />
+			</form>
+		    </div>
+		    <div class="ssearch">
+			<form action="/relix/idfetch/" method="post">
+			    {{ csrf_input }}
+			    <input type="text" name="fetchID" id="fetchID" />
+			    <input type="submit" value="pID" />
+			</form>
+		    </div>
+		    <ul class="hxbuttons">
+			{% if uuid is defined %}<li><a href="#" onClick="window.open('/relix/0/qnote/{{uuid}}', '_blank', 'width=900, height=1000, top=80, left=60'); return false;">qnote</a> | </li>
+			{% endif %}
+			<li><a href="/relix/qnote_list">qlist</a> | </li>
+			<li><a href="/relix/shortlist/">short</a> | </li>			
+
+			<li>{% if uuid is defined  and request.session[uuid] is defined and request.session[uuid].fetch_root != None and request.session[uuid].fetch_root != -9 %}<a href="/relix/{{request.session[uuid].fetch_root}}/view/ref/">refresh</a>{% else %}refresh{% endif %} | </li>
+			
+			<li><a href="/relix/recent/">recent</a> | </li>
+			<li><a href="/relix/meetings/" >meetings</a> | </li>
+			<li><a href="/relix/advsearch/" class="savewarn">adv search</a> | </li>
+			<li><a href="#" onClick="todayToggle();">today</a> | </li>			
+			<li><a href="/relix/list_tagged_pages/" >tagged pages</a> | </li>
+			<li><a href="/relix/peoples/appsadmin" >people</a> | </li>
+			<li><a href="/relix/manage_people/" >manage p</a> | </li>			
+			<li><a href="/relix/stashrecall/">stash</a> | </li>			
+			<li><a href="/relix/lockfiles/">lockfiles</a> | </li>
+
+			{% if uuid is defined  and request.session[uuid] is defined and request.session[uuid].fetch_type != "my_root" %}<li><a href="/relix/trunk/" >trunk</a> | </li>
+			{% else %}<li>trunk | </li>
+			{% endif %}
+			<li><a href="/relix/logout/">log out</a> | </li> 	
+			<li><a href="#" onClick="window.open('/relix/help/', 'Help', 'width=800, height=600, top=40, left=80'); return false;">help</a></li>
+		    </ul>
+		{% endif %}
+	    {% endblock %}
+	</div> {# closes headerx  #}
+	{#--- OPTIONBAR ----------------------- #}
+	<div id="optionBar">
+	    <div class="today_form">
+		<form action="/relix/today/" method="post">
+		    {{ csrf_input }}
+		    <ul class="txbuttons">{% for wox in workset_list %}
+			{% if wox != none %}<li><input type="checkbox" name="today_select" value="{{wox}}">{{wox}}</li> {% endif %}{% endfor %}
+			<li><input type="submit" value="today" id="today_submit" /></li>
+		    </ul>
+		    
+		</form>
+	    </div>
+	    
+	</div>{# closes optionBar --------------------- #}
+	<div id="mainContainer">
+	    <div id="sidebar">
+		{% block sidebar %}
+		    {% if request.user.username != '' %}<table id="jumpbar">
+			<tr>
+			    <td id="dw_widgets" >    {# DEPTH  popup ------------------------------------------------------------  #}
+			
+				{# WORKSET  popup ----------------------------------------------------   -#}
+			
+				<form>
+				    <select id="workset_sel" name="workset" onChange="(showWorkset(this.value))">
+					{# default_if_none is needed b/c workset_list comes w/value None
+					which has to match to "None" for selected to work when "all" is selected #}
+					{% for wox in workset_list %}
+					    <option value="{{wox}}"
+						    {% if uuid is defined and request.session[uuid] is defined and request.session[uuid].display_workset == wox|default("None") %}
+						    selected="selected"
+						    {% endif %} >
+						{% if wox != None %} {{wox}} {% else %} all {% endif %} </option>
+					{% endfor %}
+				    </select>
+				    {#  <span class="label">workset</span> #}
+				</form>
+			    </td>
+			    <td class="jumplink_lozenges">{% block shortcuts %}<span id="shortcutlist" >
+				{# shortcut li and a's are calculated in rebuild_jumplinks in views  -#}
+				{# note the precalculated snips include style=display: inline; from JavaScript??  -#}
+				{% for j in request.session.jumplist %}<span {{j|safe}}</span>{% endfor %}
+			    </span>
+			    {% endblock %}
+			    </td>
+			</tr>
+		    </table>
+		    {% endif %}
+		{% endblock %}
+		{% if request.user.username != "" %}
+		    <span class="user_data">{{ request.user.username }} ({{ request.user.first_name }} {{ request.user.last_name }})</span>
+		{% endif %}
+	    </div>
+	    <div id="messageLine">
+		{% if error_message %}{{ error_message }} {% endif %}
+		{% if request.session.messages %}{% for mx in request.session.messages|slice(3)|list|last %}{{ mx|safe }}&nbsp;{% endfor %}
+		{% endif %}
+	    </div>
+	    <div id="mcontent">
+		{# this is where the header "body" appears  #}
+		{% block content %}{% endblock %}
+	    </div>
+	</div>
+
+	<p class="mobile_blurb">mobile view</p>
+	</body>
+    </html>

@@ -1,0 +1,174 @@
+{% extends "j2_relix_base.html" %}
+{% block content %}
+    <h3>advanced search</h3>
+    {% if empty_search == 'True' %}
+	<p>No results found.</p>
+    {% endif %}
+    <div class="info_line">
+	{% if uuid is defined %}
+	    {% if request.session[uuid].fetch_type is defined %}
+		{% if request.session[uuid].fetch_type == 'search' %}
+		    <ul class="statusLine" id="search_status_line">
+			{% if uuid != 'no_uuid' %}
+			    {% for sd in request.session[uuid].search_decoded %}
+				<li class="term_line">{{ sd|safe }}</li>
+			    {% endfor %}
+			    <li class="term_line"><strong>n</strong>: {{ current_items|length }}</li>		
+			{% endif %}
+			
+			<li class="term_line"><a href="/relix/reiterate/date_mod/">date&nbsp;sort</a>&nbsp;|&nbsp;<a href="/relix/reiterate/relev/">relevance&nbsp;sort</a></li>		
+		    </ul>
+
+		{% else %}
+		    <ul class="statusLine">
+			<li>state:{{ state }}</li>
+			<li>{{request.session[uuid].fetch_root}} {{ request.session[uuid].fetch_type }}</li>
+			<li>n: {{ current_items|length }} </li>
+		    </ul>
+		{% endif %}
+	    {% endif %}
+	{% endif %}	    
+    </div>
+
+
+    <div class="nofloat"></div>
+    <form action="/relix/advsearch/{{uuid}}" method="post">
+	{{ csrf_input }}
+	<input type="hidden" name="uuid" value="{{uuid}}">
+
+	<table class="psd_table detail_table adv_search_form" >
+	    <tr class="items">
+		<td class="detail_label">pmid</td>
+		<td colspan=3><input type="text" name="pmid" id="pmid" /> </td>
+	    </tr>
+	    <tr class="items">
+		<td class="detail_label">title<sup>*</sup></td>
+		<td colspan=3><input type="text" name="title" id="title" /> (no stemming)</td>
+	    </tr>
+	    <tr class="items">
+		<td class="detail_label">noteText<sup>*</sup></td>
+		<td colspan=3><input type="text" name="noteText" id="noteText" /> </td>
+	    </tr>
+	    
+	    <tr class="items"> <td class="detail_label">dates</td>
+		<td class="detail_radio"  colspan=1 >
+		    <ul class="datePick">
+			<li><input type="radio" name="whichDate" value="dtCreated" class="modesel" checked="checked" />created</li>
+			<li><input type="radio" name="whichDate" value="dtModified" class="modesel"/>modified</li>
+		    </ul>
+		</td>
+		<td>
+		    <div >start date<br/><input type="date" name="startDate" id="startDate" />
+		</td>
+		<td>
+		    end date<br/>
+		    <input type="date" name="endDate" id="endDate" />
+		    </div>
+		</td>
+	    </tr>
+	    
+	    <tr class="items">
+		<td class="detail_label">people</td>
+		<td colspan=3>
+		    <select id="people" name="people">
+			<option value="None">--</option>
+			{%  for p in people %}
+			    <option value="{{p.nickname}}">{{p.nickname}}</option>
+			{% endfor %}
+		    </select>
+		</td>
+	    </tr>
+	    
+	    <tr><td colspan="2"><i>scope</i></td></tr>
+	    <tr class="items">
+		<td class="detail_label">scope</td>
+		<td>pmid<br/>
+		    <input type="text" id="scope_manual" name="scope_manual">
+		</td>
+		<td>jumplinks<br/>
+		    <select id="scope" name="scope">
+			<option value="">all</option>
+			{% for jid, jtext, ws in request.session.jumpset %}
+			    {#  {% ifchanged ws %}
+			    <option value="nix">-------</option>       
+			    {% endifchanged %} #}
+			    <option value="{{jid}}">{{jtext}}</option>
+			{% endfor %}
+		    </select>
+		</td>
+		<td>workset<br/>
+		    <select id="workset" name="work_set">
+			<option value="None">--</option>
+			{% for wcx in workset_list[1:] %}
+			    <option value="{{wcx}}">{{wcx}}</option>
+			{% endfor %}
+		    </select>&nbsp;&nbsp;
+		</td>
+		
+	    </tr>
+	    
+  <tr class="items">
+   <td class="detail_label">include archived</td>
+   <td>
+     <select id="include_archived" name="include_archived">
+       <option value="False">False</option>
+       <option value="True">True</option>
+      </select>
+   </td>
+  </tr>
+
+  <tr class="items">
+      
+      <td class="detail_label">webpage_set</td>
+   <td>
+     <select id="webpage_set" name="webpage_set">
+       <option value="False">False</option>
+       <option value="True">True</option>
+      </select>
+   </td>
+
+      
+  </tr>
+  <tr class="items"> <td class="detail_label">priority</td>
+    <td>
+      <select id="priority" name="priority">
+	<option value="-99" selected="selected">none selected</option>
+	{% for cid, ctext in PCHX %}
+	<option value="{{ cid}}" >{{ctext}}</option>
+	{% endfor %}
+    </select></td>
+  </tr>
+  <tr class="items">
+   <td class="detail_label">status</td><td>
+     <select id="status" name="status">
+       <option value="-99" selected="selected">none selected</option>
+       {% for cid, ctext in SCHX %}
+       <option value="{{ cid}}" >{{ctext}}</option>
+       {% endfor %}
+     </select>
+  </td>
+  </tr>
+
+  
+  <tr>
+      <td colspan="4">
+	  <input   id="action_button" class="notes_button"  type="submit" value="search" />
+      </td>
+  </tr>
+
+	</table>
+
+	<p><sup>*</sup>Fill both fields to search title + noteText simultaneously, or use quicksearch.</p>
+
+</form>
+
+
+<p class="footertime">uuid:{{uuid}}</p>
+
+ 
+{% endblock %}
+
+
+
+
+

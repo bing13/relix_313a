@@ -1,0 +1,57 @@
+{% extends "j2_relix_base.html" %}
+{% block content %}
+
+    {# MANAGE_PEOPLE FORM --------------------------------- #}
+
+    <h1>manage people</h1>
+    
+    <form action="/relix/manage_people/{{uuid}}" method="post">
+	{{ csrf_input }}
+	<p>[<a href="/relix/people/">old all assigned tasks</a>]</p>
+	<p>Before you make someone dormant, unassign their tasks.  They can't be conveniently unassigned once dormant. <br/>They'll only show up on the People display if the item has a non-dormant person assigned to it.</p>
+<p>
+    {% for teamname in TEAM_CHOICES -%}
+	 <a href="/relix/peoples/{{teamname[1]}}"> {{teamname[1]}}</a>|{% endfor %}
+</p>
+
+	<table id="manage_people"  class="psd_table item_table ">
+	    <tr><th>person</th><th>tasks</th><th>dormant</th></tr>
+		{% for person in people_nodes %}
+		<tr id=mp{{person.nickname}} class="people items">		
+		    <td>{{person.nickname}}</td> 
+		    <td><a href='/relix/person/{{person.nickname}}'>list tasks</a></td> 
+		    <td>
+			{% if person.dormant == True %}
+			    {% set check1 = 'checked="checked"' %}
+			    {% set check2 = '' %}
+			{% else %}
+			    {% set check1 = '' %}
+			    {% set check2 = 'checked="checked"' %}
+			{% endif %}
+			<label for="is_dormant_{{person.nickname}}">True</label>
+			<input type="radio" id="is_dormant_{{person.nickname}}" name="dormant_{{person.nickname}}" value="True" {{check1}} >
+			<label for="not_dormant_{{person.nickname}}">False</label>			
+			<input type="radio" id="not_dormant_{{person.nickname}}" name="dormant_{{person.nickname}}" value="False" {{check2}}>
+		    </td>
+		    <td>
+			<select name="team_{{person.nickname}}" class="team_assign_{{person.team}}" >
+				    {% for teamname in TEAM_CHOICES -%}
+					<option value="{{teamname[0]}}" {% if teamname[0] == person.is_member.single().team_name %} selected{% endif %}>{{teamname[1]}}</option>
+				    {% endfor %}
+			</select>
+		    </td>
+		    
+		</tr>		
+		{% endfor %}
+		
+	</table>
+	<div class="mp_new_person">
+	    <label for="new_person">Create a new person</label>
+	    <input name="new_person" id="new_person" />
+	</div>
+	<div id="manage_people_submit">
+	    <input type="submit" value="Update" id="manage_people_submit" />
+	</div>
+    </form>
+
+ {% endblock %}

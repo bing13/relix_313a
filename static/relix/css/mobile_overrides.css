@@ -1,0 +1,149 @@
+/*********** mobile_overrides.css    2023-05-21
+ ***********    avoids duplicating all of base CSS when styling mobile
+ ***********    this sheet is conditionally invoked on j2_relix_base.html 
+******************************************************************************************* */
+
+
+/* mobile text entry field on record_edit.html ************************************/
+div#mobile_input_wrapper {
+    display: block;
+}
+
+/* hide the CKEditor table */
+table.rt_table_wysiwyg {
+    display: none;
+}
+
+div#mobile_input_wrapper textarea#mobile_input {
+    width: 400px;
+    height: 600px;
+    /* was 200px */
+}
+
+
+
+div#sidebar table#jumpbar {
+    border-style: dotted;
+    border-width: 2px;
+    border-color: #888888;
+    /*background-color: #c4c4c4;*/
+    padding-right: 15px;
+    margin-top: 10px;
+}
+
+
+
+td.itemtd.dates {
+    font-size: 75%;
+    color: #848484;
+    width: 60px;
+    display: none; /* mobile */    
+}
+
+td.itemtd.priority, td.itemtd.status {
+        display: none; /* mobile */    
+}
+
+
+
+td.people_header_spacer, td.dates_header_spacer, td.priority_header_spacer, td.status_header_spacer, td.title_header_spacer
+{
+        display: none; /* mobile */    
+}
+
+td.jumplink_lozenges {
+        display: none; /* mobile */    
+}
+
+
+/************ People/Person tables ************************/
+
+
+th#workset_cell_column_label {
+    display: none; /* mobile */    
+}
+th#people_cell_column_label {
+    display: none; /* mobile */    
+}
+th#dates_cell_column_label {
+    display: none; /* mobile */    
+}
+th#priority_cell_column_label {
+    display: none; /* mobile */    
+}
+th#status_cell_column_label {
+    display: none; /* mobile */    
+}
+
+
+
+td.itemtd.people {
+    font-size: 75%;
+    /*width: 60px;*/
+    display: none; /* mobile */    
+    
+}
+
+/* ************************************************* */
+td.itemtd.people span.assigned_to,
+table.people div.assigned_to
+{
+    color: #440000;
+    display: none; /* mobile */    
+    
+}
+
+/************ people pane on the item list ***********/
+
+ul.item_people_assigned, ul.item_people_involved {
+    /*float: right;*/
+    list-style-type: none; 
+    font-size: 85%;
+    padding-left: 1px;
+    padding-bottom: 2px;
+    display: none; /* mobile */
+}
+ul.item_people_assigned li {
+    display: inline;
+    margin-right: 10px;
+    /*background-color: white;*/
+    color: #440000;
+    display: none; /* mobile */    
+}
+ul.item_people_involved li {
+    display: inline;
+    margin-right: 10px;
+    /*background-color: white;*/
+    display: none; /* mobile */    
+}
+
+/************************************************************************/
+
+.mobile_blurb {
+    display: block;
+    font-size: 80%;
+    color: #888888;
+}
+
+
+
+/* make the update buttons different color (resized win) */
+tr.rt_submit.upper td input, tr.rt_submit.lower td input {
+    background: #660000;
+    color: white;
+    border: none;
+    padding: 4px;
+}
+
+tr.rt_submit.upper td input:hover, tr.rt_submit.lower td input:hover {
+  background-color: #880000; 
+  color: white;
+  cursor: pointer;
+}
+
+
+tr.rt_submit.upper td::after, tr.rt_submit.lower td::after {
+    content: "  mobile" ;
+    font-size: 80%;
+}
+

@@ -1,0 +1,181 @@
+{% extends "j2_relix_base.html" %}
+{% block content %}
+    
+    <h1 class="homeTitle">relix home</h1>
+
+    <form action="/relix/login/" method="post">
+	{{ csrf_input }}
+
+	
+	{% if request.user.is_authenticated %}
+	    <p>Welcome, {{ request.user.username }}.</p>
+	{% else %}
+	    <p>Welcome, new user. Please log in.</p>
+	    <div id="home_page_login">
+		{{ form }}
+		<input type="submit" value="Log in">
+	    </div>
+	{% endif %}
+    </form>
+
+
+    {% if request.user.is_authenticated %}
+	<div class="home_page_reminder_section">
+	    
+	    {# -- BEGIN REMINDER TABLE ------------------------------------------------------------- -- #}
+	    <form action="/relix/itemsedit/" method="post">
+		{{ csrf_input }}
+		<input type="hidden" name="uuid" value={{ uuid }}>
+		<hr/>
+		<h3>reminders</h3>
+		<table id="flat_table" class="e_list psd_table item_table flat_list">
+		    {# -- header row --------------------------------------------------- -- #}
+		    <tr>
+			<td></td><td></td><td></td><td></td><td></td>
+			<td class="button_row_cell"><input id="action_button_top" class="notes_button"  type="submit" value="&nbsp;&nbsp;&nbsp;go&nbsp;&nbsp;&nbsp;" /></td>
+		    </tr>
+		    <tr class="item_table_header">
+			<th>id</th>
+			<th class="titlecol">title</th>
+			<th id="workset_cell_column_label">work set</th>
+			<th id="people_cell_column_label">ppl</th>
+			<th id="dates_cell_column_label">dates</th>
+			<th id="priority_cell_column_label">priority&nbsp;<span class="noteplus"><a href="/relix/{{target_id}}/hotsearch/{{ uuid }}">&oplus;</a></span></th>
+			<th id="status_cell_column_label">status</th>
+		    </tr>
+
+		    {# -- BEGIN MAIN LOOP ------------------------------------------------------------------- -- #}
+		    {% for ci in current_items -%}
+			<tr id = "{{ ci.pmid }}" class="items status_{{ci.status}} {% if ci.priority|int >= 1 and ci.priority|int <= 5 or ci.status|int == 1 or ci.status|int == 2 %} hot_item {% else %} not_hot {% endif %} archived_{{ ci.archived }} {% if ci.hasNote == True %} has_note {% endif %} adorn_{{ ci.adorn }}" >
+			    {# -- ID and ITEM SELECT CELL -------------------------------------------------------- -- #}
+			    {% if ci.jumplink == True -%}
+				{% if ci.jumpcolor != None %}<td class="itemtd id_cell_psd" style="border-left:5px solid {{ci.jumpcolor}};">
+				{% else %}<td class="itemtd id_cell_psd" style="border-left:5px solid #82828c;">{% endif %}
+			    {% else %}
+				    <td class="itemtd id_cell_psd" style="border-left:5px solid transparent;" >
+			    {% endif %}
+			    {# --  PMID, addNote ------------------- -- #}
+			    <span class="hideo">&squf;</span><a href="/relix/{{ci.pmid}}/view/" class="item_title_linkout">{{ci.pmid}}</a>
+			    <span class="item_select_widgets"><input type="checkbox" name="itemSelect"  value="{{ci.pmid}}" ><input type="radio" name="grab" value="{{ci.pmid}}"></span></td>
+				    {# -- PAD/BULLET/TITLE sub-table ------XXX----------------------------------------------- -- -#}
+			    <td class="itemtd" onClick="more_features( {{ci.pmid}} );Elist_item_widgets_toggle( {{ci.pmid}} );">
+				{# --  FLAT LISTS TITLE  --------------------------------- FLAT  -- - #}
+				<div class="item_content_block">
+				    {# -- show PARENTCRUMB for selected views ------------------------- -#}
+				    <div class="parentCrumb"></div>
+				    {# -- end PARENT CRUMB -- #}
+				    <div class="title_block">
+					<ul>
+					    <li class="item_title" >
+						{% if ci.pmid in lock_file_list %}<span class="lock_file_image"></span>{% endif %}
+						<span class="item_title"><a href="/relix/{{ci.pmid}}/edit/n/{{uuid}}" class="item_title_linkout">{{ ci.title|safe }}</a></span>
+						<span class="shownote_widget" {% if ci.hasNote == True -%} onClick='window.open("/relix/{{ci.pmid}}/shownote/{{uuid}}", "_blank","toolbar=no,scrollbars=yes,resizable=yes,width=600,height=600");' class="detail_noteplus item_title_linkout">&oplus;{% else %}>{% endif %}</span>
+						<span id="af{{ci.pmid}}" class="ancestor_fetch" onClick="ancestor_fetch( {{ci.pmid}} );"> &uarr;</span>
+					    </li>
+					</ul>
+					{# -- end bulletized title string for Search results, etc ---- -#}
+				    </div>
+				</div>
+				{# -- end sub-table -------------------------------------------------- -- -#}
+				{# -- related-to links ----------------------------------------------- -- -#}
+				{% if ci.rel_content|length > 0 -%}
+				    <div class="related_items_list">
+					{% for rx in ci.rel_content -%}
+					    <div class="related" style=" padding-left:8px; padding-right:8px;" >
+						<a href="/relix/{{ci.pmid}}/rel_content/{{rx.pmid}}/changerel/{{ uuid }}">related to</a>:
+						<a href="/relix/{{rx.pmid}}/view/">{{rx.pmid}}:{{rx.title}}</a>
+					    </div>
+					{% endfor %}
+				    </div>			  
+				{% endif %}
+	</div>
+	{# -- --------END TITLE_BLOCK ---------- -- #}
+	{# - BEGIN ITEM DETAIL and PEOPLE BLOCKS ---------------------------------------------------------------- -#}
+	<div class="item_details_block"   id="detail_pane{{ci.pmid}}" >
+	    <ul class="item_detail_widgets" id="mf{{ci.pmid}}" ></ul>
+	</div>
+
+	<div class="item_details_block"  id="people_pane{{ci.pmid}}" >
+	    <ul class="item_people_assigned" id="ap{{ci.pmid}}" ></ul >
+	    <ul class="item_people_involved" id="ip{{ci.pmid}}" ></ul >				
+	    {# was ul class="item_people_widget #}
+	</div>
+
+	
+	{# - END ITEM DETAIL and PEOPLE BLOCKS ---------------------------------------------------------------------------- -#}
+	
+	
+			    </td>
+			    
+			    {# -- END OF MAIN ITEM TD CELL ------------------------------------------------------------------------------------------ -- -#}
+			    {# -- work_set cell ------------------------------------------------------ #}
+			    <td class="itemtd people" >{{ci.get_workset_name()}}</td>
+
+			    {# - PEOPLE CELL ---------------------------------------------------- #}
+			    <td class="itemtd people" id="item_people{{ci.pmid}}" onClick="assign_people( {{ci.pmid}} );"    >
+				{% for ax in ci.assigned_to.all() -%}
+				    <span class="assigned_to">{{ax.nickname}}</span>
+				{% endfor %}
+				<br/>
+				{% for ix in ci.involves.all() -%}
+				    <span class="involves">{{ ix.nickname }}</span>
+				{% endfor %}
+				
+			    </td>
+
+			    {# -- date cell ------------------------------------------------------ -- -#}
+			    <td class="itemtd dates">{% if  request.session[uuid].fetch_type in ['qlist','recent'] and ci.dtAccessed != None -%}
+				<span class="accessed_date">{{ ci.dtAccessed.astimezone().strftime( '%Y-%m-%d' ) }}</span><br/>
+			    {% endif %}
+			    {{ ci.dtCreated.astimezone().strftime( '%Y-%m-%d' ) }}<br/>
+			    {{ ci.dtModified.astimezone().strftime( '%Y-%m-%d'  ) }}
+			    {% if  ci.reminder_date != None -%}
+				<span class="reminder_date  {% if ci.reminder_date < todaydate %} late {% endif %}     ">{{ ci.reminder_date }}</span><br/>
+			    {% endif %}
+
+
+			    </td>
+			    {# -- ----------- PRIORITY AND STATUS --------------------------------------------- -- -#}
+			    {# -- was: ci.get_priority_display -- -#}
+			    <td class="itemtd priority" >
+				<select name="priority_j" class="ps_select priority_{{ci.priority}}"  onchange="priority_status_update(this)">
+    				    {# -- option value="-99" selected="selected">no change</option -- #}
+				    {% for cid, ctext in PCHX -%}
+					<option value="{{cid}}" {% if cid == ci.priority %} selected{% endif %}>{{ctext}}</option>
+				    {% endfor %}
+				</select>
+				<span class="printonly priority">{{ci.priority_chx}}</span>
+			    </td>
+			    
+			    <td class="itemtd status">
+				<select name="status_j" class="ps_select" onchange="priority_status_update(this)">
+    				    {# -- option value="-99" selected="selected">no change</option -- #}
+				    {% for cid, ctext in SCHX -%}
+					<option value="{{cid}}" {% if cid == ci.status %} selected{% endif %}>{{ctext}}</option>
+				    {% endfor %}
+				</select>
+				<span class="printonly status">{{ci.status_chx}}</span>
+			    </td>
+			    {# -- ----------- NOTE CELL ---used to be here------- -- #}
+			</tr>
+			
+		    {% endfor %}  {# -- main table loop ends -- #}
+		    <tr>
+			<td></td><td></td><td></td><td></td><td></td>
+			<td class="button_row_cell"><input id="action_button_top" class="notes_button"  type="submit" value="&nbsp;&nbsp;&nbsp;go&nbsp;&nbsp;&nbsp;" /></td>
+		</tr>
+		
+	    </table>
+	    {# -- END MAIN TABLE  ------------------------------------------------------------------------- -- -#}
+
+	</form>
+	</div>
+
+
+	<p class="footertime">f2:{{todayx}}</p>
+	<p class="footertime">uuid:{{uuid}}{#<br/>vsession:{{request.session[uuid] }}#}</p>    
+{% endif %}
+
+{% endblock %}
+ 
+

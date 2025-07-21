@@ -1,0 +1,163 @@
+{% extends "j2_relix_base.html" %}
+{# RELIX3 -------------------------------------------------------------------- #}
+
+{# GRID GROUPS   ------------------------------------------------------------- GRID GROUPS #}
+{% block content %}
+    <h3>Grid groups for <em>{{workset}}</em> workset</h3>
+
+
+    {# -- BEGIN HEADER TABLE for ITEM TABLE ------------------------------------------------------------- -- #}
+
+    <form action="/relix/gridgroups/{{workset}}" method="post">
+	{{ csrf_input }}
+
+	<div class="info_line">
+	    {# <input id="action_button_top" class="notes_button"  type="submit" value="&nbsp;&nbsp;&nbsp;submit&nbsp;&nbsp;&nbsp;" /> #}
+	    <ul class="statusLine">
+		<li>{{ request.session[uuid].fetch_type }}</li>
+		<li>n: {{ workset }}</li>
+		<li><a href="/relix/grid/{{ workset }}" >grid for {{ workset }} </a></li>
+	    </ul>		      
+	</div>
+
+
+	{# -- BEGIN GRID GROUP EDIT FORM  ------------------------------------------------------------- -- #}
+	
+	<table class="e_list psd_table item_table flat_list meetings">
+	    
+	    {# -- header row --------------------------------------------------- -- #}
+	    <tr class="item_table_header">
+		<th>order</th>
+		<th class="titlecol">group name</th>
+		<th>color</th>
+		<th>update</th>
+		<th>move<br/> up</th>
+		<th>move<br> down</th>
+	    </tr>
+	    <tr><td class="meeting_workset_grouper" colspan="6">{{workset}}</td></tr>
+	    {# -- BEGIN MAIN LOOP ------------------------------------------------------------------- -- #}
+	    {# -- grid groups only for the workset that was passed in --  #}
+	    {% if grid_groups %}
+		{% for ggroup in grid_groups %}
+
+		    <tr  class="items grid_group_list_item" >
+			<td>{{ ggroup.grid_group_order }}</td>
+			<td>{{ ggroup.grid_group_name }}</td>
+			<td style="border: 2px solid {{ggroup.grid_group_color}}; ">{{ ggroup.grid_group_color }}</td>
+			
+			<td><a href="/relix/gridgroupdelete/{{ ggroup.grid_group_name }}/{{ workset }}/">delete</a> </td>
+			<td><a href="/relix/gridgroupmove/{{ ggroup.grid_group_name }}/{{ workset }}/up/">&uarr;</a> </td>
+			<td><a href="/relix/gridgroupmove/{{ ggroup.grid_group_name }}/{{ workset }}/down/">&darr;</a> </td>
+		    </tr>
+		{% endfor %}  {# -- main table loop ends -- #}
+
+	    {% endif %}
+
+	</table>
+    </form>
+
+<hr/>
+    
+    {# -- ADD GROUP  ------------------------------------------------------------------------- -- -#}
+<form action="/relix/gridgroupadd/" method="post">
+    {{ csrf_input }}
+
+
+	<h3>Add new grid group</h3>
+
+    
+	<input type="hidden" name="workset" value={{ workset }}>
+	<table class="e_list psd_table item_table flat_list meetings">
+	    <tr >
+		<th>order</th>
+		<th class="titlecol">grid group name</th>
+		<th>color</th>
+	    </tr>
+	    <tr><td class="meeting_workset_grouper" colspan="4">{{workset}}</td></tr>	    
+	    <tr class="items grid_group_list_item">
+		<td>
+		     <select name="new_gridgroup_order" class="new_shortlist_item">
+			 {% for opval, optext in GGCHX -%}
+			     <option value="{{opval}}" >{{optext}}</option>
+			 {% endfor %} add order</td>
+		    </select>
+		<td>add name<input type="text" name="new_gridgroup_name" value="" class="new_shortie_input"></td>
+		<td>add color<input type="text" name="new_gridgroup_color" value="" class="new_shortie_input"></td>
+		
+	    </tr>
+	    <tr>
+		<td colspan="4">
+		    <input   id="action_button" class="notes_button"  type="submit" value="&nbsp;&nbsp;&nbsp;submit&nbsp;&nbsp;&nbsp;" />
+		</td>
+	    </tr>
+	</table>
+	{# -- END ADD GROUP  ------------------------------------------------------------------------- -- -#}
+
+</form>
+
+	
+	<hr/>
+	
+	<h3>Assign grid items to grid groups</h3>
+	
+	<form action="/relix/gridgroupassign/" method="post">
+	    {{ csrf_input }}
+	    
+	    <input type="hidden" name="workset" value={{ workset }}>
+	    <input type="hidden" name="ass_length" value={{ grid_items|length }}>	    	    
+	    
+	    <p>Enter the order number of the grid group for each grid item note.</p>
+
+	    {# -- BEGIN ASSIGN GRID GROUP to GRID ITEMS   ------------------------------------------------------------- -- #}
+	    
+	    <table class="e_list psd_table item_table flat_list meetings">
+		
+		{# -- header row --------------------------------------------------- -- #}
+		<tr class="item_table_header">
+		    <th class="titlecol">pmid</th>
+		    <th>title</th>
+		    <th>current group</th>
+		    <th>assign to group</th>
+		</tr>
+		<tr><td class="meeting_workset_grouper" colspan="6">{{workset}}</td></tr>
+
+		{# -- grid groups only for the workset that was passed in --  #}
+		{% for gi in grid_items %}
+
+		    <tr  class="items grid_group_list_item" >
+			<td>{{gi.pmid}}<input type="hidden" name="ass_pmid_{{loop.index}}" value={{ gi.pmid }}></td>
+			<td>{{gi.title}}</td>
+			{% if gi.gg_belongs.single() == None %}
+			    <td> None</td>
+			{% else %}
+			    <td>{{gi.gg_belongs.single().grid_group_order}}: {{gi.gg_belongs.single().grid_group_name}}</td>
+			{% endif %}
+			<td>
+			    <select name="gg_order_{{loop.index}}" class="new_shortlist_item">
+				{% for chx in range(0,grid_groups|length+1) -%}
+				    <option value="{{chx}}"
+					    {% if  gi.gg_belongs.single().grid_group_order  == chx|string %}
+					    selected="selected"
+					    {% endif %}
+				    >{{chx}}</option>
+				{% endfor %} </td>
+			    </select>
+	             </td>
+		    </tr>
+		{% endfor %}  {# -- main table loop ends -- #}
+
+
+		<tr>
+		    <td colspan="4">
+			<input   id="action_button" class="notes_button"  type="submit" value="&nbsp;&nbsp;&nbsp;submit&nbsp;&nbsp;&nbsp;" />
+		    </td>
+		</tr>
+	    </table>
+	</form>
+
+	
+    
+
+    <p class="footertime">m2:{{todayx}}</p>
+{% endblock %}
+

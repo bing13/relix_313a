@@ -1,0 +1,121 @@
+{% extends "j2_relix_base.html" %}
+{% block content %}
+
+    {# PEOPLE FORM - RELIX --------------------------------- #}
+
+    <p>[<a href="/relix/manage_people/">manage people</a>]</p>
+    
+	{% set old_nick = 'pooey' %}
+	{% for ai_nick in pdict %}
+	    {% if  pdict[ai_nick]|length > 0 %}
+		
+		{% if old_nick != ai_nick %}
+		    {% set old_nick = ai_nick %}
+		    <div class="person_banner">{{ai_nick[:-9]}}</div> {# was |slice:":-9"}}</div> #}
+		{% endif %}
+		<div class="person_subbanner">{{ai_nick[-8:]}}</div>{# was |slice:"-8:"}}</div> #}
+		    
+		    <!-- BEGIN MAIN ITEM TABLE ------------------------------------------------------------- -->
+		    <table class="psd_table item_table people flat_list">
+			<!-- header row --------------------------------------------------- -->
+			<tr class="item_table_header">
+			    <th>id</th><th class="titlecol">title<span onClick="hide_search_ancestors()" class="search_ancestor_toggle">toggle search ancest.</span></th><th>p</th><th>dates</th><th>priority</th><th>status</th><th>note</th>
+			</tr>
+			
+			<!-- BEGIN MAIN LOOP ------------------------------------------------------------------- -->
+			{% for ci in pdict[ai_nick] %}
+			    <tr id = "{{ ci.pmid }}" class="people items path_length_{{ ci.path_length }} status_{{ci.status}}  {% if ci.priority|int >= 1 and ci.priority|int <= 5 or ci.status|int == 1 or ci.status|int == 2 %} hot_item {% else %} not_hot {% endif %} archived_{{ ci.archived }} {% if ci.sectionhead == True %}sectionhead {% endif %}" >
+				<td class="itemtd id_cell_psd">
+				    <a href="/relix/{{ci.pmid}}/view/">{{ci.pmid}}</a>
+				    <div class="workset">{{ci.get_workset_name()}}</div>
+				</td>
+				
+				<!-- PAD/BULL/TITLE sub-table ----------------------------------------------------- -->
+				<td class="itemtd">
+				    <div id="title_block" class="item_content_block">
+					<div class="parentCrumb">
+					    <!-- for each search result, get its ancestor.
+ 						 ancestors is a dict, each element ex., ancestors["54342"], is a list of nodes -->
+					    {#
+					    {% for anc in ancestors[ci.pmid|string] %}
+					    #}
+					    {% for anc in ancestors[ci.pmid] %}
+						<br/>
+						&nbsp;&nbsp;&nbsp;<a href="/relix/{{ anc.pmid }}/view/" class="parentLink item_title_linkout">{{ anc.title}}</a>
+					    {% endfor %}
+					</div>
+					
+					<ul>
+					    <li class="item_title" >
+						<span class="item_title"><a href="/relix/{{ci.pmid}}/edit/n/{{ uuid }}">{{ ci.title|safe }}</a></span>
+  						<span class="popout" 
+						      onClick="var $pmid =$(this).closest('tr').attr('id'); window.open('/relix/' + $pmid + '/qnote/{{ uuid }}','_blank','width=900,height=1000,top=80,left=60');">&nearr;
+						</span>
+					    </li>
+					</ul>
+					
+				    </div>
+				    
+				    <!-- end sub-table -------------------------------------------------- -->
+				    
+				    <!-- related-to links ----------------------------------------------- -->
+				    {% for rx in ci.rel_content %}
+					<div class="related"><i>related to:</i>
+					    <a href="/relix/{{rx.pmid}}/view/">{{rx.pmid}}:{{rx.title}}</a>
+					</div>
+				    {% endfor %}
+				</td>
+				
+				<td class="itemtd">
+				    <div class="assigned_to">
+					{% for asst in ci.assigned_to %}
+					    {{ asst.nickname }}{% endfor %}</div>
+					<div class="involves">
+					    {% for invo in ci.involves %}
+						{{ invo.nickname }}{% endfor %}</div>
+					    
+				</td>
+				
+				<!-- date cell ------------------------------------------------------ -->
+				<td class="itemtd dates">
+				    {{ ci.dtCreated.astimezone().strftime( '%Y-%m-%d' )  }}<br/> {{ ci.dtModified.astimezone().strftime( '%Y-%m-%d' ) }}
+
+
+				</td>
+				<!-- ----------- PRIORITY AND STATUS --------------------------------------------- -->
+				<!-- was: ci.get_priority_display -->
+				<td class="itemtd ppriority priority_p{{ci.priority}}" ><span class="priority_p{{ci.priority}}">{{ci.priority_chx()}}</span>
+				    <span class="printonly priority_p{{ci.priority}}">{{ci.priority_chx()}}</span>
+				</td>
+				
+				<td class="itemtd status">{{ci.status_chx()}}
+				    <span class="printonly status">{{ci.status_chx()}}</span>
+				</td>
+				
+				
+				<!-- ----------- NOTE CELL ------------------------------------------------------------ -->
+				<td class="itemtd note_cell_psd">
+				    {% if ci.hasNote == True %}
+					<span onClick='window.open("/relix/{{ci.pmid}}/shownote/{{uuid}}", "_blank", "toolbar=no,scrollbars=yes,resizable=yes,top=80,left=250,width=600,height=600");' class="noteplus">&oplus;</span>
+				    {% endif %}
+				</td>
+			    </tr>
+			    
+			{% endfor %}
+			
+		    </table>
+		    
+		    
+		{% else %}
+		    {# person may have involved but not assigned, or vice versa #}
+		
+	    {% endif %}
+
+	{% endfor %}
+    
+    <p><span class="user_data">People:{{people_sort}}</span></p>
+    
+    <p class="footertime"></p>
+	
+	
+{% endblock %}

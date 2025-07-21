@@ -1,0 +1,38 @@
+{% extends "j2skinny_base.html" %}
+{% block content %}
+
+<h1>FEATURES.HTML -- NOT USED</H1>
+    
+ <div id="show_note more_features">
+    <ul class="statusLine shownote">
+	<li>workset:<strong>{{work_set}}</strong></li>
+	<li>target:{{target.pmid}}</li>
+	<li>fetchRoot:{{request.session.fetchRoot}} </li>
+    </ul>
+    
+    <div class="shownote_title">
+	<h3><a href="/relix_nm/{{target.pmid}}/view/">{{target.pmid}}</a>: {{target.title}}</h3>
+    </div>
+    
+    <div>    
+    <div class="shownote_dateline nofloat">
+	created: {{target.dtCreated}} | {{target.dtModified}}
+    </div>
+
+    <div class="feature_widgets">
+<ul>	
+	<li  onClick="tagged_page_toggle( {{target.pmid}} );" id="tp{{target.pmid}}" {% if target.tagged_page == True %} class="tagged_page tp_hilite live_link" {% else %} class="tagged_page live_link" {% endif %} >&starf;</li>
+	<li  onClick="shortlist_toggle( {{target.pmid}} );" id="sl{{target.pmid}}" {% if target.pmid in shortlist_ids %} class="shortlist sl_hilite live_link" {% else %} class="shortlist live_link" {% endif %} >&oS;</li>
+	<li>{% with px=target.child_of.single() -%}
+	    {% if request.session.fetchType == 'my_root' or px == None -%} <a href="/relix_nm/{{ target.pmid }}/myroot/0/changerel/{{ return_me_to }}/">add parent</a> {% else %}<a href="/relix_nm/{{target.pmid}}/child_of/{{px.pmid}}/changerel/{{ return_me_to }}/">move</a>{% endif %}{% endwith %}</li>
+	{% if target.rel_content|length == 0 -%}
+	    <li><a href="/relix_nm/{{target.pmid}}/rel_content/0/changerel/{{ return_me_to }}/"  >add rel.</a></li>
+	{% endif %}
+	<li class="static_text">{% if request.session.fetchType != 'search' and request.session.fetchType != 'my_root' and request.session.fetchType != 'today' %} {{target.path_length}}:{{target.topSort}}{% endif %}</li>
+
+</ul>	
+    </div>
+</div>
+
+{% endblock %}
+ 

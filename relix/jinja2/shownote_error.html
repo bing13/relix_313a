@@ -1,0 +1,23 @@
+{% extends "j2skinny_base.html" %}
+{% block content %}
+
+    <div id="show_note">
+	<ul class="statusLine shownote">
+	    {% if request.session[uuid] is defined -%}
+		<li>fetch_root:{{request.session[uuid].fetch_root}}</li>
+		<li>fetch_type:{{request.session[uuid].fetch_type}}</li>
+	    {% endif %}
+	</ul>
+	
+	<div class="shownote_title">
+	    <h2>Error.</h2>
+	    <h3>{{error_message}}</h3>
+	</div>
+	<p>Sorry.</p>
+
+
+	
+    <p class="footertime">sn2:{{ todayx  }}</p>
+
+{% endblock %}
+ 

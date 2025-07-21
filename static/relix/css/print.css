@@ -1,0 +1,182 @@
+#headerx, div#optionBar  {
+    display: none;
+}
+
+#sidebar, #messageLine, .headline, .fastAddLink, .archiveLink, .noteExpandWidget, .prio_stat_btns, .toggleDone, .simpleToggle, .hide_from_print { 
+    display: none; 
+}
+
+
+a:link, a:visited  {
+    color: black;
+    text-decoration:none;
+}
+
+
+html {
+        font-family: sans-serif;
+
+}
+
+.print_prioStat { 
+    float: left;
+    display: inline-block;
+    width: 100px;
+    margin-top: 6px;
+    font-size: 90%;
+
+ }
+ 
+.titleContainer {
+    float: left;
+    display: inline-block;
+
+    width: 80%;
+}
+
+.titletext {
+
+    color: black;
+}
+
+.itemdrag {
+    border-bottom: 1px dotted red;
+
+}
+
+.prioritySelect, .statusSelect {
+    font-size: 50%;
+}
+
+/* following are psd elements */
+.id_cell_psd, .pfi_cell_psd, .note_cell_psd, tr th, td.itemtd.priority select, td.itemtd.status select {
+    display: none;
+}
+
+
+.date_cell_psd {
+    display: none;
+}
+
+.item_title_psd {
+    width: 80%;
+    font-size: 85%;
+}
+
+table.psd_table.item_table {
+    margin-top: 65px;
+}
+
+table.psd_table.item_table tr.items {
+    font-size: 75%;
+}
+
+table.psd_table.item_table td.itemtd {
+    border-bottom: 1px dotted #eeeeee;        
+}
+
+/*table td.itemtd table.itemParentTitle tr td span.parentCrumb */
+table td.itemtd div#title_block span.parentCrumb
+{
+    font-size: 60%;
+    color: #aaaaaa;
+    display: inline-block;
+    margin-left: 40px;
+}
+
+table.psd_table.item_table tr.items td.itemtd div.related {
+    margin-left: 80px;
+    font-size: 60%;
+}
+
+table.psd_table.item_table tr.items td.itemtd div.related a:link,
+table.psd_table.item_table tr.items td.itemtd div.related a:visited  {
+    color: pink;
+}
+
+
+
+table.psd_table.item_table td.itemtd.dates,
+table.psd_table.item_table td.itemtd.note_cell_psd
+{
+    display: none;
+}
+
+
+table.item_table td.itemtd.checkboxcell, 
+table.item_table td.itemtd.id_cell_psd,
+table.item_table td.itemtd.relx_cell_psd,
+table.item_table td.pathLength {
+    display: none;
+}
+
+div#mainContainer div#mcontent ul.statusLine,
+div#mainContainer div#mcontent div.doLink
+{
+    display: none;
+}
+
+
+p.mobile_blurb {
+    display: none;
+}
+
+tr.submit_button, input#action_button_top {
+    display: none;
+}
+
+div#mainGrid {
+    font-size: 75%;
+}
+
+div.time {
+    font-size: 70%;
+}
+
+.gridview_print_view_only {
+    display: block;
+
+
+}
+
+.gridview_not_print_view {
+    display: none;
+
+}
+
+.projheader {
+    font-size: 140%;
+    clear: both;
+}
+
+.gridCell {
+    display: block;
+    clear: both;
+}
+
+.itemd.gridview_print_view_only {
+   
+    margin-top: 3px;
+}
+
+.mainGrid > .all_set {
+
+    display: block;
+
+}
+
+/* following insures that on print display, .set_x style doesn't force things to display-inline (and hence
+look like they're floating */
+
+.gridCell.set_0, .gridCell.set_1, .gridCell.set_2, .gridCell.set_3, .gridCell.set_4, .gridCell.set_5, .gridCell.set_6, .gridCell.set_7 {
+
+    display: block;
+
+}
+
+/* hide lower-priority items when you print the grid */
+
+.grid_print_priority_0,  .grid_print_priority_4, .grid_print_priority_5, .grid_print_priority_6, .grid_print_priority_7, .grid_print_priority_8,  .grid_print_priority_9 {
+
+    display: none;
+} 

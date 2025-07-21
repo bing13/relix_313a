@@ -1,0 +1,79 @@
+{% extends "j2skinny_base.html" %}
+{% block content %}
+
+    <div id="show_note">
+	<ul class="statusLine shownote">
+	    <li>workset:<strong>{{work_set}}</strong></li>
+	    <li>target:{{target.pmid}}</li>
+	    {% if request.session[uuid] is defined -%}
+		<li>fetch_root:{{request.session[uuid].fetch_root}}</li>
+		<li>fetch_type:{{request.session[uuid].fetch_type}}</li>
+	    {% endif %}
+	</ul>
+	
+	<div class="shownote_title"><h3><span onClick="shownote_header_toggle();" class="shownote_header_widget">&pm;&nbsp;</span><a href="/relix/{{target.pmid}}/view/">{{target.pmid}}</a>: {{target.title}}</h3>
+	</div>
+	
+	<div class="anc anc_crumb">
+	    <span class="parentCrumb">
+		<h5>ancestors</h5>
+		<ul>
+
+		    {% for anc in target_ancestors %}
+			<li><a href="/relix/{{ anc.pmid }}/view/" class="parentLink">{{ anc.title}}</a></li>
+		    {% endfor %}
+		</ul>
+	    </span>
+	</div>
+	<div class="rel anc_crumb" >
+	    <span class="parentCrumb">
+		{% if target.rel_content|length > 0 %}
+		    <h5>related to</h5>
+		    <ul>
+			{% for rx in target.rel_content %}
+			    <li {% if rx.status == '9' %}class="rel_done"{% endif %}><a href="/relix/{{rx.pmid}}/view/">{{rx.pmid}}:{{rx.title}}</a></li>
+			{% endfor %}
+		    </ul>		    
+		{% endif %}
+
+	    </span>
+	</div>
+	
+	<table class="shownote_dateline nofloat">
+	    
+	    <tr>
+		<td>created: {{target.dtCreated.astimezone().strftime( '%Y-%m-%d  %Z'  )}}</td>
+		<td>priority: {{target.priority_chx()}} </td>
+	    </tr>
+	    <tr>
+		<td>modified: {{target.dtModified.astimezone().strftime( '%Y-%m-%d  %Z'  )}}</td>
+		<td>status: {{target.status_chx()}}</td>
+	    </tr>
+	</table>
+
+	    
+	</table>
+
+	<div class="shownote">
+            {% if "</" in  esNoteDict %}
+		<div class="wrap_note note_formatted">{{esNoteDict|safe}}<br/></div>
+	    {% else %}
+		<pre class="wrap_note note_plain">{{esNoteDict|urlize(123)}}<br/>[pre]</pre>
+
+            {% endif %}
+	</div>
+
+	<div class="showpix">
+	    {% for imagex in image_list_display %}
+		<div class="showpix_each">
+		    <div class="showpix_files">{{imagex|urlize}}</div>
+		    <div class="showpix_images"><img src={{imagex}} ></div>
+		</div>
+	    {% endfor %}
+	</div>
+    </div>
+
+    <p class="footertime">sn2:{{ todayx  }}</p>
+
+{% endblock %}
+ 

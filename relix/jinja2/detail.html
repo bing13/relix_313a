@@ -1,0 +1,147 @@
+{% extends "j2_relix_base.html" %}
+{% block content %}
+
+    <h3><a href="/relix/{{target.pmid}}/view/">{{target.pmid}}</a>    {{target.title}}
+
+    <span onClick="toggle_detail_metadata();" class="shownote_header_widget"> &nbsp;&#9883;</span></h3>
+    <div class="detail_metadata">
+	<h4>metadata</h4>
+	
+	<table class="psd_table  detail_table upper" >
+	    <tr class="items" >
+		<td class="detail_label">ancestors</td>
+		<td>
+		    <ul>
+			{% for anc in target_ancestors %}
+			    <li><a href="/relix/{{ anc.pmid }}/view/" class="parentLink">{{ anc.title}}</a></li>
+			{% endfor %}
+		    </ul>
+		</td>
+	    </tr>
+	    
+	    <tr class="items"> <td class="detail_label">relationships</td>
+		<td>
+		    <table class="relationship_table">
+			{% for rx in target.child_of  %}
+			    <tr>
+				<td>child_of</td>
+				<td> <a href="/relix/{{rx.pmid}}/view/">{{rx.pmid}}</td><td>{{rx.title}}</a></td>
+				
+			    </tr>
+			{% endfor %}
+			<tr>
+			    <td>this item</td>
+			    <td ><strong><a href="/relix/{{target.pmid}}/edit/n/{{ uuid }}" >{{ target.pmid }}</a> </strong></td>
+			    <td><strong>{{target.title }}</strong> </td>
+			</tr>
+			
+			{% for rx in target.rel_content  %}
+			    <tr>
+				<td>rel_content</td>
+				<td> <a href="/relix/{{rx.pmid}}/view/">{{rx.pmid}}</td><td>{{rx.title}}</a></td>
+				
+			    </tr>
+			{% endfor %}
+			
+			
+			{% for rx in target.relates  %}
+			    <tr>
+				<td> relates</td>
+				<td> <a href="/relix/{{rx.pmid}}/view/">{{rx.pmid}}</td><td>{{rx.title}}</a></td>
+				
+			    </tr>
+			{% endfor %}
+			
+			{% for rx in target.prev_instance  %}
+			    <tr>
+				<td>prev_instance</td>
+				<td> <a href="/relix/{{rx.pmid}}/view/">{{rx.pmid}}</td><td>{{rx.title}}</a></td>
+				
+			    </tr>
+			{% endfor %}
+			
+		    </table>
+		</td> 
+	    </tr> 
+	    
+	</table>
+	
+	<table class="psd_table  detail_table  psd_detail_lower">
+
+	    <tr class="items"> <td class="detail_label">work_set</td><td><strong>{{target.get_workset_name() }}</strong> </td></tr>
+	    <tr class="items"> <td class="detail_label flag">hasNote</td><td>{{target.hasNote }} </td></tr>	
+	    <tr class="items"> <td  class="detail_label">dtCreated</td><td>{{ target.dtCreated.astimezone().strftime( '%Y-%m-%d'  ) }} (Local) | {{target.dtCreated.strftime( '%Y-%m-%d %H:%M' ) }} (UTC)</td></tr>
+	    
+	    <tr class="items"> <td  class="detail_label">dtModified</td><td>{{ target.dtModified.astimezone().strftime( '%Y-%m-%d'  ) }} (Local) |   {{target.dtModified.strftime( '%Y-%m-%d %H:%M' ) }} (UTC)</td></tr>
+	    <tr class="items"> <td  class="detail_label">dtAccessed</td><td>{{target.dtAccessed }} </td></tr>	
+	    <tr class="items"> <td  class="detail_label">reminder_date</td><td>{{target.reminder_date }} </td></tr>	
+	    <tr class="items"> <td  class="detail_label">created_by</td><td>{{target.created_by }} </td></tr>
+	    <tr class="items"> <td class="detail_label">archived</td><td>{{target.archived}} </td></tr>	
+	    
+	    <tr class="items"> <td class="detail_label">priority</td><td>{{target.priority }} {{target.priority_chx()}} </td></tr>
+	    <tr class="items"> <td class="detail_label">status</td><td>{{target.status }} {{target.status_chx()}} </td></tr>
+	    
+	    <tr class="items"> <td class="detail_label">adorn</td><td>{{target.adorn }} </td></tr>
+	    <tr class="items"> <td class="detail_label">topSort</td><td>{{target.topSort }} </td></tr>	
+	    
+	</table>
+	<table class="psd_table  detail_table  psd_detail_lower">
+	    <tr class="items"> <td class="detail_label">assigned to</td><td>{{target.assigned_to_peoples}} </td></tr>
+	    <tr class="items"> <td class="detail_label">involves</td><td>{{target.involves_peoples }} </td></tr>
+	    <tr class="items"> <td  class="detail_label flag">tagged_page</td><td>{{target.tagged_page }} </td></tr>
+	    <tr class="items"> <td  class="detail_label flag">shortlist</td><td>{{target.shortlist_marker }} </td></tr>
+	    <tr class="items"> <td  class="detail_label flag">start_folded</td><td>{{target.start_folded}} </td></tr>
+	    <tr class="items"> <td  class="detail_label flag">meeting_master</td><td>{{target.meeting_master}} </td></tr>
+	    <tr class="items"> <td class="detail_label flag">sectionhead</td><td>{{target.sectionhead }} </td></tr>
+	    <tr class="items"> <td class="detail_label flag">jumplink</td><td>{{target.jumplink }} </td></tr>
+	    <tr class="items"> <td class="detail_label">jumplabel</td><td>{{target.jumplabel }} </td></tr>
+	    <tr class="items"> <td class="detail_label">jumpcolor</td><td>{{target.jumpcolor }} </td></tr>	
+	    <tr class="items"> <td class="detail_label flag">gridItem</td><td>{{target.gridItem }} </td></tr>
+	    <tr class="items"> <td class="detail_label">grid_order</td><td>{{target.grid_order }} </td></tr>
+	    <tr class="items"> <td class="detail_label">webpage_set</td><td>{{target.webpage_set }} </td></tr>	
+	</table>
+	
+    </div>
+
+    <!-- NOTE TEXT --------------------------------------------------------------------- --> 
+     <table class="nofloat">
+	<tr class="items"><td><h4>noteText</h4></td></tr>
+	<tr>
+	    <td colspan="2" class="detail_note_cell">
+		<!-- check the noteText for HTML tagging -->
+		{% if esNoteDict == '' %}
+		    None<br/>
+		{% elif "</" in  esNoteDict %}
+		    <div class="wrap_note note_formatted">{{esNoteDict|safe}}</div>
+		{% else %}
+		    <pre class="wrap_note note_plain">{{esNoteDict}}<br/>(plain text)</pre>
+		{% endif %}
+	</tr>
+     </table>
+     {% if image_list_display|length > 0 -%}
+	 <h4>image list</h4>
+	<table class="nofloat">
+	    <tr class="items">
+		<td>
+		    <div class="showpix">
+			{% for imagex in image_list_display %}
+			    <div class="showpix_each">
+				<div class="showpix_files">{{imagex|urlize}}</div>
+				<div class="showpix_images"><img src={{imagex}} ></div>
+			    </div>
+			{% endfor %}
+		    </div>
+		</td>
+	    </tr>
+	{% endif %}
+	
+	</table>
+    <p class="nofloat"></p>
+    <hr/>
+    
+    <p><a href="/relix/{{target.pmid}}/edit/n/{{ uuid }}" class="item_title_psd">edit {{ target.pmid }}</a></p>
+    
+    <p><br/><br/><br/>
+	<a href="/relix/{{target.pmid}}/deletenote/{{ uuid }}" class="item_title_psd"><strong>delete</strong> {{ target.pmid }}</a></p>
+    
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "j2_relix_base.html" %}
+{% block content %}
+    <ul class="statusLine">
+	<li><b>{{ target_workset }}</b></li>
+	{% if grid_parents|length != 0 %}
+	    <li>cells:{{ grid_parents|length }}</li>
+	{% endif %}
+	<li>items: {{ num_of_kids }}</li>
+	<li><a href="/relix/gridgroups/{{target_workset}}">grid groups</a></li>
+	
+    </ul>
+    
+    <div id="mainGrid" >
+	{% if grid_parents|length > 0 %}
+	    {% for gp in grid_parents %}
+		<hr class="gridview_print_view_only"/>
+		
+		{% set this_group = gp.gg_belongs.single() %}
+		
+		{% if loop.changed(this_group.grid_group_name) %}
+		    <div class="nofloat"></div>
+		{% endif %}
+		<div class="gridCell workset_{{gp.get_workset_name()}} grid_group_order_{{gp.grid_order}}" id="grid_cell_{{gp.pmid}}"
+				     style="border: 2px solid {{this_group.grid_group_color}}; ">
+		    <div class="grid_cell_title">
+			<a href="/relix/{{gp.pmid}}/view/">{{gp.title}}</a> <span class="gr_order"   style="color: {{this_group.grid_group_color}};" >
+			    {{this_group.grid_group_name}}/{{this_group.grid_group_order}} </span>
+		    </div>
+		    
+		    <div class="gridItemList">
+			
+			{% for parentID, kidnodes  in grid_kids.items() %}
+			    {% if parentID == gp.pmid %}
+				{% for kidnode in kidnodes %}
+				    
+    				    <div class="itemd gridview_not_print_view"  >
+					<span class="priority_block_{{ kidnode.priority }}" onClick='window.open("/relix/{{kidnode.pmid}}/view/" );' ></span>
+					<span class="item_title etn" onClick="window.open('/relix/{{kidnode.pmid}}/qnote/{{uuid}}','_blank','width=900,height=1000');"> <!-- was top=80, left=60 -->
+					    <span class="adorn_{{ kidnode.adorn }}">{{ kidnode.title|safe|truncate(120) }}</span></span>{% if kidnode.hasNote == True %}<span onClick='window.open("/relix/{{kidnode.pmid}}/shownote/{{uuid}}", "_blank", "toolbar=no,scrollbars=yes,resizable=yes,width=600,height=600");' class="noteplus">&oplus;</span>{% endif %}
+					    
+				    </div>
+				    
+  				    <div class="itemd gridview_print_view_only grid_print_priority_{{kidnode.priority}}">{{ kidnode.priority }}:   {{ kidnode.title }}</div>
+				{% endfor %}
+			    {% endif %}
+			    
+			{% endfor %} <!-- end ci in kids loop -->
+		    </div> <!-- end girdItemlist div -->
+		</div> <!-- end gridCell div -->
+		
+	    {% endfor %} <!--  end parent_id, kids look -->
+	    
+	{% else %}
+	    <p>No regular grid items.</p>
+	{% endif %}	
+	<!-- now list any important items that aren't under a grid parent -->
+	
+	{% if other_important|length > 0 %}       
+	    <hr class="gridview_print_view_only"/>
+	    <div class="gridCell workset_other-important" id="grid_cell_other">
+		<div class="grid_cell_title">
+		    == items w/o grid parents ==
+		</div>
+		
+		<div class="gridItemList">
+		    {% for kidnode in other_important %}
+			
+    			<div class="itemd gridview_not_print_view" >
+			    <span class="priority_block_{{ kidnode.priority }}" onClick='window.open("/relix/{{kidnode.pmid}}/view/", target="grid_drilldown" );' ></span>
+			    
+			    <span class="item_title etn" onClick="window.open('/relix/{{kidnode.pmid}}/qnote/{{uuid}}','_blank','width=900,height=1000');"><!-- was top=80, left=60 -->
+				<span class="adorn_{{ kidnode.adorn }}">{{ kidnode.title|safe|truncate(120) }}</span>
+			    </span>
+			    {% if kidnode.hasNote == True %}<span onClick='window.open("/relix/{{kidnode.pmid}}/shownote/{{uuid}}", "_blank", "toolbar=no,scrollbars=yes,resizable=yes,width=600,height=600");' class="noteplus">&oplus;</span>{% endif %} <!-- was top=80, left=250 -->
+			    
+			    <span class="gr_order"> [{{kidnode.get_workset_name()}}]</span></div>
+			
+  			<div class="itemd gridview_print_view_only grid_print_priority_{{kidnode.priority}}">{{ kidnode.priority }}:   {{ kidnode.title }}    [{{kidnode.get_workset_name()}}]</div>
+		    {% endfor %} <!-- end ci in kids loop -->
+		</div> <!-- end girdItemlist div -->
+	    </div> <!-- end gridCell div -->
+	{% endif %}
+	
+	
+
+	
+    </div><!-- close maingrid -->
+
+
+    <p class="footertime">uuid:{{uuid}}</p>
+{% endblock %}

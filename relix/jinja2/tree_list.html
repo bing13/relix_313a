@@ -1,0 +1,35 @@
+{% extends "j2_relix_base.html" %}
+{% block content %}
+
+    <input type="hidden" name="uuid" value={{ uuid }}>
+
+    
+    {% if current_items %}
+	<h2>parent pages</h2>
+	<h3>tree list</h3>
+
+	<table class="skinny">
+	    <tr><th>pmid</th><th>kids</th><th>title</th><th>last mod</th></tr>
+	    {% for ci in current_items %}
+		{% if ci.count_of_descendants() > 0 %}
+		    <tr class="{% if ci.count_of_descendants() > 10 -%}strong{% endif %} row1"> 
+			<td><a href="/relix/{{ci.pmid}}/view/">{{ci.pmid}}</a></td>  
+			<td>{{ci.count_of_descendants() }}</td>
+			<td>{{ ci.path_length|safe }}{{ci.title}}</td>
+			<td class="skinny_date">{{ci.dtModified.strftime( '%Y-%m-%d %H:%M' ) }}</td>
+		{% endif %}
+	    {% endfor %}
+		    </tr>
+	</table>
+	
+    {% else %}
+	<p>No items are available.</p>
+    {% endif %}
+
+    <p class="footertime">f2:{{todayx}}</p>
+    <p class="footertime">uuid:{{uuid}}</p>
+
+
+    
+{% endblock %}
+ 
