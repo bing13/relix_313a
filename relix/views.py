@@ -539,7 +539,10 @@ def cancel_edit(request, target_id, return_to_id, uuid):
         rutils.logThis(request, "cancel_edit: lockfile did not exist! ID: %s" % target_id)
         rutils.message(request, 'Lockfile did not exist! %s' % target_id)
         request.session['umessage'] = 'Lockfile did not exist! %s' % target_id
-    
+
+    sdict = {'fetch_root':return_to_id, 'fetch_type':'tree'}
+    rutils.vsession(request,'update',sdict,uuid)
+        
     return universal_return(request, 'cancel_edit',  target_id, False, uuid)
 
 ### BEGIN QNOTES  ###########################################################################
