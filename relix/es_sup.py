@@ -17,7 +17,7 @@ import pytz
 
 from django.urls import reverse
 from relix.forms import  quickSearchForm, advancedSearchForm, idSearchForm
-from relix.models import Notes, Work_set, People
+from relix.models import Notes, Work_set, People, Group
 
 #from neo4j import GraphDatabase, basic_auth
 from neomodel import db, DoesNotExist
@@ -135,7 +135,9 @@ def ESupdateDocument(request, targetNode, newText):
 
     # tojson is where newText='no_text_update' is flagged
     dx = tojson(targetNode, newText)
-    rutils.logThis(request,"       dx=%s %s ..." % (dx['pmid'],dx['title']))
+    #rutils.logThis(request,"       dx=%s %s ..." % (dx['pmid'],dx['title']))
+    rutils.logThis(request,"       dx=%s " % dx )
+    
     UPDATE_URL = ES_UNM+'_update/'+str(targetNode.pmid)
     rutils.logThis(request,"       ESupdateDocument: %s " % UPDATE_URL )
 
@@ -317,6 +319,18 @@ def tojson(nodex, newText):
         dmodtemp = None
     else:
         dmodtemp = int(datetime.timestamp(nodex.dtModified)*1000)
+        
+    if nodex.dtAccessed == None:
+        dacctemp = None
+    else:
+        dacctemp = int(datetime.timestamp(nodex.dtAccessed)*1000)
+
+    if nodex.reminder_date == None:
+        dremind = None
+    else:
+        #dremind = int(datetime.timestamp(nodex.reminder_date)*1000)
+        # nope, it's date, not a datetime. So convert it first
+        dremind = int(datetime.timestamp(datetime(nodex.reminder_date.year, nodex.reminder_date.month, nodex.reminder_date.day, 0,0,0,0))*1000)
 
     # get any people assignments/involvements ######
     #    ES will index Nickname like a text attribute.
@@ -329,17 +343,25 @@ def tojson(nodex, newText):
     else:
         arch_es = 'false'
 
+    # create indicator for shortlist membership
+    #  note, this is not the genralized solution. There can be an arbitrary # of lists
+    shortlist_group_node = Group.nodes.get(group_name="shortlist", created_by=nodex.created_by)
+    if nodex in shortlist_group_node.group_items:
+        shortlist_flag = True
+    else:
+        shortlist_flag = False
+
     # build the python object, then dump as JSON string        
     # even the most minimal update requires these:
     j1 = { "pmid" : nodex.pmid,\
            "dtModified" : dmodtemp,\
+           "dtAccessed":dacctemp,\
            "priority" : nodex.priority, \
            "status" : nodex.status }
 
-    # these terms used to be set to "none".
-    # changed to elide 2021-02-15
-    #      2024-03-17 uh-oh. Eliding results in no ES update when a person is removed from a task
-    #                           Now will try setting to '' when person is removed.  
+    # 2021-02-15 these terms used to be set to "none"..  changed to elide 
+    # 2024-03-17 uh-oh. Eliding results in no ES update when a person is removed from a task
+    #       Now will try setting to '' when person is removed.  
     
     if assigned_to != '':
          j1.update({ "assigned_to" : assigned_to } )
@@ -349,7 +371,8 @@ def tojson(nodex, newText):
         j1.update( { "involves" : involves } )
     else:
         j1.update( { "involves" : '' } )
-
+        
+    # 2025-09-14 added adorn, jumpcolor,start_folded, reminder_date, tagged_page,shortlist,meeting_master, gridItem,grid_order
     j2 = { "created_by" : nodex.created_by, \
            "title" : nodex.title, \
            "dtCreated" : int(datetime.timestamp(nodex.dtCreated)*1000), \
@@ -359,8 +382,19 @@ def tojson(nodex, newText):
            "webpage_set":nodex.webpage_set, \
            "jumplink" : nodex.jumplink, \
            "jumplabel" : nodex.jumplabel, \
+           "jumpcolor" : nodex.jumpcolor, \
            "image_list" : nodex.image_list, \
-           "work_set" : nodex.get_workset_name() }
+           "work_set" : nodex.get_workset_name(), \
+           "start_folded":nodex.start_folded,\
+           "adorn":nodex.adorn, \
+           "hasNote":nodex.hasNote, \
+           "reminder_date":dremind, \
+           "tagged_page":nodex.tagged_page, \
+           "shortlist":shortlist_flag, \
+           "meeting_master":nodex.meeting_master, \
+           "gridItem":nodex.gridItem, \
+           "grid_order":nodex.grid_order
+          }
     
     j3 = {"noteText" : newText }
 
