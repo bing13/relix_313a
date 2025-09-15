@@ -293,11 +293,16 @@ def notes_edit(request, target_id, qnote='n',return_target="-9", uuid='no_ne_uui
             if 'fetch_type' not in list(request.session[uuid].keys()):
                 rutils.vsession(request,'update',{'fetch_type':'tree'},uuid)
                 rutils.logThis(request, "      ERROR: fetch_type not defined(ne)")
-                rutils.message(request, "fetch_type not defined")                
+                rutils.message(request, "fetch_type not defined")
+            else:
+                rutils.logThis(request, "      fetch_type: %s" %  request.session[uuid]['fetch_type'])
             if 'fetch_root' not in list(request.session[uuid].keys()):
                 rutils.vsession(request,'update',{'fetch_root':-9},uuid)
                 rutils.logThis(request, "      ERROR: fetch_root not defined(ne)")
                 rutils.message(request, "fetch_root not defined")
+            else:
+                rutils.logThis(request, "      fetch_root: %s" %  request.session[uuid]['fetch_root'])
+
             ######################################################
                 
             if return_me_to == '-16':
@@ -532,6 +537,7 @@ def cancel_edit(request, target_id, return_to_id, uuid):
     '''abandon edit. clean up lockfile, return to previous view'''
     #remove lockfile, if it exists
     
+    rutils.logThis(request, "ENTER CANCEL_EDIT for %s" % target_id)
     lockfile = LOCKFILES+request.user.username+'_'+str(target_id)+'.lck'
     if os.path.isfile(lockfile):
         os.remove(lockfile)
@@ -539,10 +545,14 @@ def cancel_edit(request, target_id, return_to_id, uuid):
         rutils.logThis(request, "cancel_edit: lockfile did not exist! ID: %s" % target_id)
         rutils.message(request, 'Lockfile did not exist! %s' % target_id)
         request.session['umessage'] = 'Lockfile did not exist! %s' % target_id
-
-    sdict = {'fetch_root':return_to_id, 'fetch_type':'tree'}
-    rutils.vsession(request,'update',sdict,uuid)
         
+    ##sdict = {'fetch_root':return_to_id, 'fetch_type':'tree'}
+    ##rutils.vsession(request,'update',sdict,uuid)
+    
+    # 2025-09-14 -- cancelling a pop-up edit resulted in error URL. trying this
+    ##if target_id == -9:
+     ##   target_id = return_to_id
+    
     return universal_return(request, 'cancel_edit',  target_id, False, uuid)
 
 ### BEGIN QNOTES  ###########################################################################
@@ -573,9 +583,12 @@ def qnotes(request, target_id, uuid):
             
     else:
         ######## GET ################################################################
+        
         if target_id != 0:
+
             # it's a pop-up edit of an existing note, not a new qnote
-            sdict = {'fetch_type':'popup-existing-edit'}
+            rutils.logThis(request, "      Popup existing, Target_id: %s " % target_id)
+            sdict = {'fetch_type':'popup-existing-edit', 'fetch_root':target_id }
             rutils.vsession(request,'update',sdict,uuid)
             
             target_node = Notes.nodes.get(pmid=target_id)
@@ -2159,6 +2172,8 @@ def universal_return(request, called_by, target_id=-9, rebuild=False, uuid='no_u
             return HttpResponseRedirect(reverse('relix:completed', kwargs={'uuid':uuid, 'popup_msg':'note locked!','target_id':target_id }))
         elif fetch_type =='recent':
             return HttpResponseRedirect(reverse('relix:recent'))
+        elif fetch_type =='home':
+            return HttpResponseRedirect(reverse('relix:home'))        
         elif fetch_type =='list_tagged_pages':
             return HttpResponseRedirect(reverse('relix:list_tagged_pages'))
         elif fetch_type =='shortview':
