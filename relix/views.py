@@ -545,7 +545,8 @@ def cancel_edit(request, target_id, return_to_id, uuid):
         rutils.logThis(request, "cancel_edit: lockfile did not exist! ID: %s" % target_id)
         rutils.message(request, 'Lockfile did not exist! %s' % target_id)
         request.session['umessage'] = 'Lockfile did not exist! %s' % target_id
-        
+
+    ## overwriting these session var's broke the nice "Completed.." messages in the floating window 2025-09-14
     ##sdict = {'fetch_root':return_to_id, 'fetch_type':'tree'}
     ##rutils.vsession(request,'update',sdict,uuid)
     
@@ -592,7 +593,7 @@ def qnotes(request, target_id, uuid):
             rutils.vsession(request,'update',sdict,uuid)
             
             target_node = Notes.nodes.get(pmid=target_id)
-            title_crumb = "Edit:"+target_node.title
+            title_crumb = "Edit:"+str(target_node.pmid)+' '+target_node.title
             treat_as_qnote = 'n'
 
             # TEMPORARY. DO NOT SAVE. Just for passing to template
